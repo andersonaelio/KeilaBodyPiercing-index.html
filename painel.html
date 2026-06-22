@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Painel · Keila Body Piercer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06181a;--bg-2:#0a2426;--card:#0f3338;--card-2:#0a2629;
+    --line:#2b5a5f;--line-soft:#1c474b;--cream:#f1ece6;--cream-dim:#e6ddd2;
+    --muted:#9ab4b6;--muted-2:#6e8d8f;
+    --gold-1:#f3ddb4;--gold-2:#e7c891;--gold-3:#d6b06a;--copper:#c9a86a;
+    --serif:'Playfair Display',Georgia,serif;--sans:'Jost',system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#04100f;color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased;position:relative}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(44% 38% at 12% 7%,rgba(231,200,145,.09),transparent 60%),radial-gradient(65% 60% at 46% 48%,rgba(31,120,124,.16),transparent 72%),linear-gradient(150deg,#0a2a2c,#06191b 52%,#04100f);}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:880px;margin:0 auto;padding:0 28px}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.2}
+
+  .btn-rose{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 46%,var(--gold-3));color:#3a2c10;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:.76rem;padding:13px 24px;border-radius:40px;border:none;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 26px -10px rgba(207,159,94,.5);transition:transform .2s}
+  .btn-rose:hover{transform:translateY(-2px)}
+  .btn-ghost{display:inline-flex;align-items:center;gap:9px;background:var(--card);color:var(--cream);font-weight:400;letter-spacing:.1em;text-transform:uppercase;font-size:.72rem;padding:11px 20px;border-radius:40px;border:1px solid var(--line);cursor:pointer;transition:border-color .2s}
+  .btn-ghost:hover{border-color:var(--copper)}
+
+  header{border-bottom:1px solid var(--line-soft)}
+  .topbar{max-width:880px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:74px;gap:14px}
+  .logo{font-family:var(--serif);font-style:italic;font-size:1.4rem;display:flex;align-items:baseline;gap:9px}
+  .logo span{font-family:var(--sans);font-style:normal;font-size:.58rem;letter-spacing:.32em;color:var(--muted);text-transform:uppercase}
+
+  main{padding:60px 0 90px}
+
+  .login-card{max-width:420px;margin:40px auto 0;background:var(--bg-2);border:1px solid var(--line);border-radius:22px;padding:36px 34px 40px}
+  .login-card h2{font-size:1.7rem;margin-bottom:6px}
+  .login-card .hint{color:var(--muted);font-size:.92rem;margin-bottom:26px}
+
+  label{display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:0 0 7px}
+  input,select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--cream);font-family:var(--sans);font-size:.95rem;padding:13px 15px;margin-bottom:18px;outline:none;transition:border-color .2s}
+  input:focus,select:focus{border-color:var(--copper)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+  .manage-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:28px}
+  .manage-head h2{font-size:2rem}
+  .manage-head p{color:var(--muted);font-size:.92rem;margin-top:4px}
+
+  .card{background:var(--bg-2);border:1px solid var(--line);border-radius:20px;padding:30px 30px 34px;margin-bottom:24px}
+  .card h3{font-size:1.3rem;margin-bottom:18px}
+
+  .admin-list{display:flex;flex-direction:column;gap:12px}
+  .admin-row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line-soft);border-radius:14px;padding:12px}
+  .admin-row .thumb{width:54px;height:54px;border-radius:10px;background:linear-gradient(160deg,#13474c,#0d3539);flex:0 0 54px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted-2)}
+  .admin-row .thumb img{width:100%;height:100%;object-fit:cover}
+  .admin-row .info{flex:1;min-width:0}
+  .admin-row .info b{font-family:var(--serif);font-weight:500;font-size:1.08rem;display:block}
+  .admin-row .info small{color:var(--muted)}
+  .admin-row .acts{display:flex;gap:8px}
+  .icon-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .icon-btn:hover{border-color:var(--copper);color:var(--cream)}
+  .icon-btn.del:hover{border-color:#8a5a52;color:#e8a08f}
+  .list-empty{text-align:center;color:var(--muted-2);padding:30px;border:1px dashed var(--line);border-radius:14px}
+
+  .uploader{border:1px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted-2);cursor:pointer;margin-bottom:18px;transition:border-color .2s}
+  .uploader:hover{border-color:var(--copper)}
+  .uploader img{max-height:120px;border-radius:10px;margin:0 auto 8px}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--copper);color:var(--cream);padding:13px 22px;border-radius:30px;font-size:.9rem;z-index:80;opacity:0;transition:all .3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{border-color:#b06a60}
+  .hidden{display:none}
+  @media(max-width:560px){.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <a href="index.html" class="logo">Keila <span>Painel</span></a>
+    <div style="display:flex;gap:10px">
+      <a href="index.html" class="btn-ghost">← Ver site</a>
+      <button class="btn-ghost hidden" id="logoutBtn" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div id="loginView">
+    <div class="login-card">
+      <h2>Painel da Keila</h2>
+      <p class="hint">Entre com seu e-mail e senha para gerenciar as joias do catálogo.</p>
+      <label>E-mail</label>
+      <input type="email" id="email" placeholder="seu@email.com" autocomplete="username">
+      <label>Senha</label>
+      <input type="password" id="pwd" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn-rose" id="loginBtn" onclick="doLogin()" style="width:100%;justify-content:center">Entrar</button>
+      <p class="hint" id="loginErr" style="color:#e8a08f;margin:14px 0 0;display:none"></p>
+    </div>
+  </div>
+
+  <div id="manageView" class="hidden">
+    <div class="manage-head">
+      <div>
+        <h2>Suas joias</h2>
+        <p>Tudo que você adicionar aqui aparece no catálogo do site na hora.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Joias no catálogo</h3>
+      <div class="admin-list" id="adminList"></div>
+    </div>
+
+    <div class="card">
+      <h3 id="formTitle">Adicionar nova joia</h3>
+      <div class="uploader" id="uploader" onclick="document.getElementById('file').click()">
+        <div id="upText"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="margin:0 auto 8px"><path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Clique para enviar a foto da joia</div>
+      </div>
+      <input type="file" id="file" accept="image/*" style="display:none" onchange="previewFile(this)">
+      <label>Nome da joia</label>
+      <input type="text" id="fName" placeholder="Ex.: Argola cravejada">
+      <div class="row2">
+        <div><label>Categoria</label>
+          <select id="fCat"><option>Argolas</option><option>Pontos / Labrets</option><option>Correntes</option><option>Microdermais</option><option>Ornamentadas</option></select>
+        </div>
+        <div><label>Material</label>
+          <input type="text" id="fMat" placeholder="Titânio ASTM F-136">
+        </div>
+      </div>
+      <label>Preço (R$)</label>
+      <input type="number" id="fPrice" placeholder="130">
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button class="btn-rose" onclick="saveJoia()" id="saveBtn" style="flex:1;justify-content:center">Adicionar ao catálogo</button>
+        <button class="btn-ghost" onclick="resetForm()" id="cancelBtn" style="display:none">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SB_URL='https://ciwyxnyeusmjblvvanph.supabase.co';
+  const SB_KEY='sb_publishable_bcxBHJT2vhPsh3fPoFticw_kUw40F19';
+  const sb=window.supabase.createClient(SB_URL,SB_KEY);
+  let joias=[], editingId=null, pendingFile=null;
+  const phIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
+
+  function toast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');setTimeout(()=>t.className='toast'+(err?' err':''),3200);}
+  function show(view){
+    document.getElementById('loginView').classList.toggle('hidden',view!=='login');
+    document.getElementById('manageView').classList.toggle('hidden',view!=='manage');
+    document.getElementById('logoutBtn').classList.toggle('hidden',view!=='manage');
+  }
+
+  async function init(){
+    const {data}=await sb.auth.getSession();
+    if(data.session){show('manage');await loadJoias();}else{show('login');}
+  }
+  async function doLogin(){
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('pwd').value;
+    const btn=document.getElementById('loginBtn');btn.textContent='Entrando…';
+    const {error}=await sb.auth.signInWithPassword({email,password});
+    btn.textContent='Entrar';
+    if(error){const e=document.getElementById('loginErr');e.textContent='E-mail ou senha incorretos.';e.style.display='block';return;}
+    show('manage');await loadJoias();
+  }
+  async function doLogout(){await sb.auth.signOut();show('login');toast('Você saiu do painel.');}
+
+  async function loadJoias(){
+    const {data,error}=await sb.from('joias').select('*').order('criado_em',{ascending:false});
+    if(error){toast('Erro ao carregar joias.',true);return;}
+    joias=data||[];renderList();
+  }
+  function renderList(){
+    document.getElementById('adminList').innerHTML=joias.length?joias.map(j=>`
+      <div class="admin-row">
+        <div class="thumb">${j.foto_url?`<img src="${j.foto_url}">`:phIcon}</div>
+        <div class="info"><b>${j.nome}</b><small>${j.categoria||''} · R$ ${j.preco}</small></div>
+        <div class="acts">
+          <button class="icon-btn" onclick="editJoia('${j.id}')" title="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button class="icon-btn del" onclick="delJoia('${j.id}')" title="Remover"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+        </div>
+      </div>`).join(''):'<div class="list-empty">Nenhuma joia ainda. Adicione a primeira abaixo.</div>';
+  }
+
+  function previewFile(input){const f=input.files[0];if(!f)return;pendingFile=f;const url=URL.createObjectURL(f);document.getElementById('upText').innerHTML=`<img src="${url}"><div>Foto carregada — clique para trocar</div>`;}
+
+  async function saveJoia(){
+    const nome=document.getElementById('fName').value.trim();
+    const preco=document.getElementById('fPrice').value;
+    if(!nome||!preco){toast('Preencha pelo menos o nome e o preço.',true);return;}
+    const btn=document.getElementById('saveBtn');btn.textContent='Salvando…';
+    try{
+      let foto_url=null;
+      const cur=editingId?joias.find(x=>x.id===editingId):null;
+      if(cur)foto_url=cur.foto_url;
+      if(pendingFile){
+        const ext=(pendingFile.name.split('.').pop()||'jpg').toLowerCase();
+        const path=Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
+        const up=await sb.storage.from('joias').upload(path,pendingFile);
+        if(up.error)throw up.error;
+        foto_url=sb.storage.from('joias').getPublicUrl(path).data.publicUrl;
+      }
+      const payload={nome,categoria:document.getElementById('fCat').value,material:document.getElementById('fMat').value.trim()||'Titânio ASTM F-136',preco:Number(preco),foto_url};
+      let res;
+      if(editingId)res=await sb.from('joias').update(payload).eq('id',editingId);
+      else res=await sb.from('joias').insert(payload);
+      if(res.error)throw res.error;
+      resetForm();await loadJoias();toast(editingId?'Joia atualizada!':'Joia adicionada!');
+    }catch(e){toast('Erro ao salvar: '+(e.message||'tente novamente'),true);}
+    btn.textContent=editingId?'Salvar alterações':'Adicionar ao catálogo';
+  }
+
+  function editJoia(id){
+    const j=joias.find(x=>x.id===id);editingId=id;pendingFile=null;
+    document.getElementById('fName').value=j.nome;
+    document.getElementById('fCat').value=j.categoria||'Argolas';
+    document.getElementById('fMat').value=j.material||'';
+    document.getElementById('fPrice').value=j.preco;
+    document.getElementById('upText').innerHTML=j.foto_url?`<img src="${j.foto_url}"><div>Foto atual — clique para trocar</div>`:'Clique para enviar a foto da joia';
+    document.getElementById('formTitle').textContent='Editar joia';
+    document.getElementById('saveBtn').textContent='Salvar alterações';
+    document.getElementById('cancelBtn').style.display='inline-flex';
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  }
+  async function delJoia(id){
+    if(!confirm('Remover esta joia do catálogo?'))return;
+    const {error}=await sb.from('joias').delete().eq('id',id);
+    if(error){toast('Erro ao remover.',true);return;}
+    if(editingId===id)resetForm();await loadJoias();toast('Joia removida.');
+  }
+  function resetForm(){
+    editingId=null;pendingFile=null;
+    ['fName','fMat','fPrice'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('fCat').selectedIndex=0;
+    document.getElementById('upText').innerHTML='<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="margin:0 auto 8px"><path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Clique para enviar a foto da joia';
+    document.getElementById('formTitle').textContent='Adicionar nova joia';
+    document.getElementById('saveBtn').textContent='Adicionar ao catálogo';
+    document.getElementById('cancelBtn').style.display='none';
+  }
+
+  init();
+</script>
+</body>
+</html>
