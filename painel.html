@@ -10,19 +10,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b3034;--bg-2:#0e393d;--card:#103f44;--card-2:#0d3539;
+    --bg:#06181a;--bg-2:#0a2426;--card:#0f3338;--card-2:#0a2629;
     --line:#2b5a5f;--line-soft:#1c474b;--cream:#f1ece6;--cream-dim:#e6ddd2;
     --muted:#9ab4b6;--muted-2:#6e8d8f;
     --gold-1:#f3ddb4;--gold-2:#e7c891;--gold-3:#d6b06a;--copper:#c9a86a;
     --serif:'Playfair Display',Georgia,serif;--sans:'Jost',system-ui,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased}
+  body{background:#04100f;color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased;position:relative}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(44% 38% at 12% 7%,rgba(231,200,145,.09),transparent 60%),radial-gradient(65% 60% at 46% 48%,rgba(31,120,124,.16),transparent 72%),linear-gradient(150deg,#0a2a2c,#06191b 52%,#04100f);}
   a{color:inherit;text-decoration:none}
   .wrap{max-width:880px;margin:0 auto;padding:0 28px}
   h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.2}
 
-  .btn-rose{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(105deg,var(--gold-1),var(--gold-3));color:#3a2f12;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:.76rem;padding:13px 24px;border-radius:40px;border:none;cursor:pointer;transition:transform .2s}
+  .btn-rose{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 46%,var(--gold-3));color:#3a2c10;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:.76rem;padding:13px 24px;border-radius:40px;border:none;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 26px -10px rgba(207,159,94,.5);transition:transform .2s}
   .btn-rose:hover{transform:translateY(-2px)}
   .btn-ghost{display:inline-flex;align-items:center;gap:9px;background:var(--card);color:var(--cream);font-weight:400;letter-spacing:.1em;text-transform:uppercase;font-size:.72rem;padding:11px 20px;border-radius:40px;border:1px solid var(--line);cursor:pointer;transition:border-color .2s}
   .btn-ghost:hover{border-color:var(--copper)}
