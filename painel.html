@@ -102,6 +102,19 @@
     </div>
   </div>
 
+  <div id="recoveryView" class="hidden">
+    <div class="login-card">
+      <h2>Criar nova senha</h2>
+      <p class="hint">Defina a nova senha de acesso ao painel.</p>
+      <label>Nova senha</label>
+      <input type="password" id="newPwd" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+      <label>Confirmar nova senha</label>
+      <input type="password" id="newPwd2" placeholder="Repita a senha" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSetNewPassword()">
+      <button class="btn-rose" id="setPwdBtn" onclick="doSetNewPassword()" style="width:100%;justify-content:center">Salvar nova senha</button>
+      <p class="hint" id="recoveryErr" style="color:#e8a08f;margin:14px 0 0;display:none"></p>
+    </div>
+  </div>
+
   <div id="manageView" class="hidden">
     <div class="manage-head">
       <div>
@@ -155,11 +168,39 @@
   function toast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');setTimeout(()=>t.className='toast'+(err?' err':''),3200);}
   function show(view){
     document.getElementById('loginView').classList.toggle('hidden',view!=='login');
+    document.getElementById('recoveryView').classList.toggle('hidden',view!=='recovery');
     document.getElementById('manageView').classList.toggle('hidden',view!=='manage');
     document.getElementById('logoutBtn').classList.toggle('hidden',view!=='manage');
   }
+  async function doSetNewPassword(){
+    const p1=document.getElementById('newPwd').value;
+    const p2=document.getElementById('newPwd2').value;
+    const err=document.getElementById('recoveryErr');
+    err.style.display='none';
+    if(p1.length<6){err.textContent='A senha precisa ter pelo menos 6 caracteres.';err.style.display='block';return;}
+    if(p1!==p2){err.textContent='As senhas não coincidem.';err.style.display='block';return;}
+    const btn=document.getElementById('setPwdBtn');btn.textContent='Salvando…';
+    const {error}=await sb.auth.updateUser({password:p1});
+    btn.textContent='Salvar nova senha';
+    if(error){err.textContent='Não foi possível salvar: '+error.message;err.style.display='block';return;}
+    toast('Senha atualizada! Você já está logado.');
+    show('manage');await loadJoias();
+  }
 
   async function init(){
+    const hash=window.location.hash||'';
+    const isRecovery=hash.includes('type=recovery');
+    sb.auth.onAuthStateChange((event)=>{
+      if(event==='PASSWORD_RECOVERY'){show('recovery');}
+    });
+    if(isRecovery){
+      // aguarda a lib processar o token do hash antes de decidir a view
+      setTimeout(async ()=>{
+        const {data}=await sb.auth.getSession();
+        if(data.session)show('recovery');else show('login');
+      }, 400);
+      return;
+    }
     const {data}=await sb.auth.getSession();
     if(data.session){show('manage');await loadJoias();}else{show('login');}
   }
