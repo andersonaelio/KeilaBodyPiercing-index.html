@@ -138,6 +138,7 @@
   .cat-filters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:-26px 0 46px}
   .cat-chip{font-size:.78rem;letter-spacing:.06em;padding:8px 18px;border-radius:30px;color:var(--muted);cursor:pointer;transition:all .25s;
     background:rgba(255,255,255,.03);backdrop-filter:blur(6px);border:1px solid rgba(231,200,145,.14)}
+  .cat-chip.sub{font-size:.72rem;padding:6px 14px;opacity:.92}
   .cat-chip.active,.cat-chip:hover{border-color:var(--copper);color:var(--cream);background:rgba(231,200,145,.06)}
   .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
   .jewel{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);transition:transform .4s cubic-bezier(.2,.7,.3,1),border-color .4s,box-shadow .4s}
@@ -402,7 +403,7 @@
       <h2>Joias <span class="accent">disponíveis</span></h2>
       <p>Peças em titânio biocompatível selecionadas pela Keila. Os valores podem variar conforme a avaliação anatômica.</p>
     </div>
-    <div class="cat-filters reveal" id="locFilters" style="margin-bottom:14px"></div>
+    <div class="reveal" id="locFilters" style="margin:-26px 0 18px"></div>
     <div class="cat-filters reveal" id="catFilters"></div>
     <div class="cat-grid" id="catGrid"><div class="cat-state">Carregando joias…</div></div>
   </div>
@@ -649,18 +650,43 @@
   const SB_URL='https://ciwyxnyeusmjblvvanph.supabase.co';
   const SB_KEY='sb_publishable_bcxBHJT2vhPsh3fPoFticw_kUw40F19';
   const sb=window.supabase.createClient(SB_URL,SB_KEY);
-  let _joias=[], _cat='Todas', _loc='Todos';
+  let _joias=[], _cat='Todas', _loc='Todos', _reg='Todos';
+  const REGIOES=[
+    ['Orelha',['Lóbulo','Hélix','Forward hélix','Anti-hélix','Flat','Tragus','Anti-tragus','Daith','Rook','Conch','Snug','Industrial']],
+    ['Nariz',['Nostril','Septo','Bridge','High nostril']],
+    ['Boca e lábios',['Labret','Vertical labret','Medusa','Monroe','Madonna','Ashley','Smiley','Língua']],
+    ['Rosto',['Sobrancelha','Bochecha','Maçã do rosto']],
+    ['Corpo',['Umbigo','Mamilo','Nuca','Microdermal']]
+  ];
+  function regiaoDe(local){
+    const r=REGIOES.find(([,ls])=>ls.some(l=>l.toLowerCase()===String(local).toLowerCase()));
+    return r?r[0]:'Outros';
+  }
+  function regioesDaJoia(j){return [...new Set((j.locais||[]).map(regiaoDe))];}
   const _ph='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
   const catIO=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');catIO.unobserve(e.target);}}),{threshold:.1});
 
   function _cats(){return ['Todas',...new Set(_joias.map(j=>j.categoria).filter(Boolean))];}
   function _renderLocFilters(){
     const f=document.getElementById('locFilters');
-    const todos=[...new Set(_joias.flatMap(j=>j.locais||[]))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-    if(!todos.length){f.innerHTML='';return;}
-    f.innerHTML='<span class="filter-lab">Onde</span>'+['Todos',...todos].map(l=>
-      `<button class="cat-chip ${l===_loc?'active':''}" data-l="${l.replace(/"/g,'&quot;')}">${l}</button>`).join('');
-    f.querySelectorAll('.cat-chip').forEach(b=>b.onclick=()=>{_loc=b.dataset.l;_renderLocFilters();_renderFilters();_renderGrid();});
+    const usados=[...new Set(_joias.flatMap(j=>j.locais||[]))];
+    if(!usados.length){f.innerHTML='';return;}
+    const regsUsadas=[...new Set(usados.map(regiaoDe))]
+      .sort((a,b)=>{const o=REGIOES.map(r=>r[0]).concat('Outros');return o.indexOf(a)-o.indexOf(b);});
+    let html='<div class="filter-row"><span class="filter-lab">Onde</span>'+
+      ['Todos',...regsUsadas].map(r=>
+        `<button class="cat-chip ${r===_reg?'active':''}" data-r="${r.replace(/"/g,'&quot;')}">${r}</button>`).join('')+'</div>';
+    if(_reg!=='Todos'){
+      const espec=usados.filter(l=>regiaoDe(l)===_reg).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      if(espec.length>1){
+        html+='<div class="filter-row"><span class="filter-lab">Ponto</span>'+
+          ['Todos',...espec].map(l=>
+            `<button class="cat-chip sub ${l===_loc?'active':''}" data-l="${l.replace(/"/g,'&quot;')}">${l}</button>`).join('')+'</div>';
+      }
+    }
+    f.innerHTML=html;
+    f.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{_reg=b.dataset.r;_loc='Todos';_renderLocFilters();_renderFilters();_renderGrid();});
+    f.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{_loc=b.dataset.l;_renderLocFilters();_renderFilters();_renderGrid();});
   }
   function _renderFilters(){
     const f=document.getElementById('catFilters');
@@ -670,7 +696,10 @@
   }
   function _renderGrid(){
     const g=document.getElementById('catGrid');
-    const list=_joias.filter(j=>(_cat==='Todas'||j.categoria===_cat)&&(_loc==='Todos'||(j.locais||[]).includes(_loc)));
+    const list=_joias.filter(j=>
+      (_cat==='Todas'||j.categoria===_cat)&&
+      (_reg==='Todos'||regioesDaJoia(j).includes(_reg))&&
+      (_loc==='Todos'||(j.locais||[]).some(l=>l.toLowerCase()===_loc.toLowerCase())));
     if(!_joias.length){g.innerHTML='<div class="cat-state">Em breve as joias estarão disponíveis aqui.</div>';return;}
     if(!list.length){g.innerHTML='<div class="cat-state">Nenhuma joia nesta categoria.</div>';return;}
     g.innerHTML=list.map(j=>`
