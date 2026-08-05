@@ -131,6 +131,10 @@
   .zoom{position:absolute;top:16px;right:16px;z-index:2;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--rose-2);
     background:rgba(7,24,26,.6);backdrop-filter:blur(8px);border:1px solid rgba(231,200,145,.2)}
 
+  .filter-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .filter-lab{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2);margin-right:4px}
+  .jm-locais{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .jm-loc{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--rose-2);background:rgba(231,200,145,.1);border:1px solid rgba(231,200,145,.25);border-radius:20px;padding:5px 12px}
   .cat-filters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:-26px 0 46px}
   .cat-chip{font-size:.78rem;letter-spacing:.06em;padding:8px 18px;border-radius:30px;color:var(--muted);cursor:pointer;transition:all .25s;
     background:rgba(255,255,255,.03);backdrop-filter:blur(6px);border:1px solid rgba(231,200,145,.14)}
@@ -398,6 +402,7 @@
       <h2>Joias <span class="accent">disponíveis</span></h2>
       <p>Peças em titânio biocompatível selecionadas pela Keila. Os valores podem variar conforme a avaliação anatômica.</p>
     </div>
+    <div class="cat-filters reveal" id="locFilters" style="margin-bottom:14px"></div>
     <div class="cat-filters reveal" id="catFilters"></div>
     <div class="cat-grid" id="catGrid"><div class="cat-state">Carregando joias…</div></div>
   </div>
@@ -644,11 +649,19 @@
   const SB_URL='https://ciwyxnyeusmjblvvanph.supabase.co';
   const SB_KEY='sb_publishable_bcxBHJT2vhPsh3fPoFticw_kUw40F19';
   const sb=window.supabase.createClient(SB_URL,SB_KEY);
-  let _joias=[], _cat='Todas';
+  let _joias=[], _cat='Todas', _loc='Todos';
   const _ph='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
   const catIO=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');catIO.unobserve(e.target);}}),{threshold:.1});
 
   function _cats(){return ['Todas',...new Set(_joias.map(j=>j.categoria).filter(Boolean))];}
+  function _renderLocFilters(){
+    const f=document.getElementById('locFilters');
+    const todos=[...new Set(_joias.flatMap(j=>j.locais||[]))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    if(!todos.length){f.innerHTML='';return;}
+    f.innerHTML='<span class="filter-lab">Onde</span>'+['Todos',...todos].map(l=>
+      `<button class="cat-chip ${l===_loc?'active':''}" data-l="${l.replace(/"/g,'&quot;')}">${l}</button>`).join('');
+    f.querySelectorAll('.cat-chip').forEach(b=>b.onclick=()=>{_loc=b.dataset.l;_renderLocFilters();_renderFilters();_renderGrid();});
+  }
   function _renderFilters(){
     const f=document.getElementById('catFilters');
     if(_joias.length<2){f.innerHTML='';return;}
@@ -657,7 +670,7 @@
   }
   function _renderGrid(){
     const g=document.getElementById('catGrid');
-    const list=_joias.filter(j=>_cat==='Todas'||j.categoria===_cat);
+    const list=_joias.filter(j=>(_cat==='Todas'||j.categoria===_cat)&&(_loc==='Todos'||(j.locais||[]).includes(_loc)));
     if(!_joias.length){g.innerHTML='<div class="cat-state">Em breve as joias estarão disponíveis aqui.</div>';return;}
     if(!list.length){g.innerHTML='<div class="cat-state">Nenhuma joia nesta categoria.</div>';return;}
     g.innerHTML=list.map(j=>`
@@ -678,6 +691,9 @@
     document.getElementById('jmCat').textContent=j.categoria||'';
     document.getElementById('jmNome').textContent=j.nome;
     document.getElementById('jmMat').textContent=j.material||'';
+    const lc=document.getElementById('jmLocais');
+    lc.innerHTML=(j.locais||[]).map(l=>`<span class="jm-loc">${l}</span>`).join('');
+    lc.style.display=(j.locais&&j.locais.length)?'flex':'none';
     const d=document.getElementById('jmDesc');
     d.textContent=j.descricao||'';d.style.display=j.descricao?'block':'none';
     document.getElementById('jmPreco').innerHTML='<small>Valor</small>R$ '+j.preco;
@@ -695,7 +711,7 @@
   (async()=>{
     const {data,error}=await sb.from('joias').select('*').order('criado_em',{ascending:false});
     if(error){document.getElementById('catGrid').innerHTML='<div class="cat-state">Não foi possível carregar o catálogo agora.</div>';return;}
-    _joias=data||[];_renderFilters();_renderGrid();
+    _joias=data||[];_renderLocFilters();_renderFilters();_renderGrid();
   })();
 </script>
 <div class="jm-overlay" id="jmOverlay" onclick="if(event.target===this)fecharJoia()">
@@ -707,6 +723,7 @@
       <h3 id="jmNome"></h3>
       <div class="jm-mat" id="jmMat"></div>
       <div class="jm-line"></div>
+      <div class="jm-locais" id="jmLocais"></div>
       <div class="jm-desc" id="jmDesc"></div>
       <div class="jm-price" id="jmPreco"></div>
       <a id="jmWa" href="#" target="_blank" rel="noopener" class="btn-rose">
