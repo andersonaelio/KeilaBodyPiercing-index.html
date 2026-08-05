@@ -53,13 +53,14 @@
   .accent{color:var(--rose-2)}
   .ital{font-style:italic}
 
-  .btn-rose{display:inline-flex;align-items:center;gap:10px;color:#3a2c10;font-weight:500;letter-spacing:.13em;text-transform:uppercase;font-size:.78rem;padding:16px 32px;border-radius:40px;border:none;cursor:pointer;
+  .btn-rose{display:inline-flex;align-items:center;gap:10px;color:#3a2c10;font-weight:500;letter-spacing:.13em;text-transform:uppercase;font-size:.78rem;padding:16px 32px;border-radius:40px;border:none;cursor:pointer;min-height:52px;
     background:linear-gradient(180deg,var(--rose-1),var(--rose-2) 46%,var(--rose-3));
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 14px 30px -10px rgba(207,159,94,.5),0 2px 6px rgba(0,0,0,.4);transition:transform .25s ease,box-shadow .25s ease}
   .btn-rose:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 20px 40px -12px rgba(207,159,94,.6),0 2px 8px rgba(0,0,0,.45)}
   .btn-ghost{display:inline-flex;align-items:center;gap:10px;color:var(--cream);font-weight:400;letter-spacing:.13em;text-transform:uppercase;font-size:.78rem;padding:16px 30px;border-radius:40px;cursor:pointer;
-    background:rgba(255,255,255,.04);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(231,200,145,.22);transition:border-color .25s ease,background .25s ease}
-  .btn-ghost:hover{border-color:var(--rose-2);background:rgba(255,255,255,.06)}
+    background:rgba(231,200,145,.07);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid rgba(231,200,145,.5);
+    min-height:52px;transition:border-color .25s ease,background .25s ease}
+  .btn-ghost:hover,.btn-ghost:active{border-color:var(--rose-2);background:rgba(231,200,145,.14)}
 
   header{position:fixed;top:0;left:0;right:0;z-index:50;border-bottom:1px solid transparent;transition:background .35s,border-color .35s,backdrop-filter .35s}
   header.scrolled{background:linear-gradient(180deg,rgba(7,24,26,.7),rgba(7,24,26,.4));backdrop-filter:blur(18px) saturate(120%);-webkit-backdrop-filter:blur(18px) saturate(120%);border-color:rgba(231,200,145,.1)}
@@ -85,6 +86,11 @@
   .stat b{font-family:var(--serif);font-size:1.6rem;font-weight:500;color:var(--cream)}
   .stat span{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-top:3px}
   .stat-div{width:1px;background:rgba(231,200,145,.14);margin:6px 0}
+  a.stat{position:relative;border-radius:12px;transition:background .25s}
+  a.stat b{color:var(--rose-2)}
+  a.stat b::after{content:"↗";font-family:var(--sans);font-size:.72rem;margin-left:5px;vertical-align:top;opacity:.85}
+  a.stat span{border-bottom:1px solid rgba(231,200,145,.45);padding-bottom:2px;display:inline-block}
+  a.stat:hover,a.stat:active{background:rgba(231,200,145,.1)}
 
   .hero-visual{position:relative}
   .photo{position:relative;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted-2);text-align:center;font-size:.8rem;letter-spacing:.05em;overflow:hidden}
@@ -156,6 +162,12 @@
   .jewel-divider{height:1px;width:34px;background:linear-gradient(90deg,var(--copper),transparent);margin-bottom:14px;transition:width .4s ease}
   .jewel:hover .jewel-divider{width:64px}
   .jewel-body .price{font-family:var(--serif);color:var(--rose-2);font-size:1.4rem}
+  .jewel-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(231,200,145,.14)}
+  .jewel-ver{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--rose-2)}
+  .jewel-ver svg{transition:transform .3s}
+  .jewel:hover .jewel-ver svg{transform:translateX(3px)}
+  .jewel-tap{position:absolute;top:13px;right:13px;z-index:2;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(6,22,22,.72);backdrop-filter:blur(6px);border:1px solid rgba(231,200,145,.35);color:var(--rose-2)}
   .cat-state{grid-column:1/-1;text-align:center;color:var(--muted-2);padding:56px 0;border:1px dashed rgba(231,200,145,.18);border-radius:18px}
   .jewel.reveal{opacity:0;transform:translateY(30px)}.jewel.reveal.in{opacity:1;transform:none}
 
@@ -199,6 +211,8 @@
   .faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
   .faq-a p{color:var(--muted);padding:0 4px 28px;max-width:680px}
 
+  .mid-cta{margin-top:52px;text-align:center}
+  .mid-cta p{color:var(--muted);margin-bottom:18px;font-size:1rem}
   #contato{padding-bottom:120px}
   .cta-box{position:relative;overflow:hidden;border-radius:30px;padding:80px 40px;text-align:center;
     background:radial-gradient(120% 120% at 70% 0,rgba(231,200,145,.12),transparent 55%),linear-gradient(160deg,rgba(20,56,60,.6),rgba(8,28,31,.5));
@@ -210,16 +224,18 @@
   footer{border-top:1px solid rgba(231,200,145,.1);padding:40px 0;text-align:center;color:var(--muted-2);font-size:.82rem}
   footer .logo{justify-content:center;margin-bottom:14px;font-size:1.3rem}
 
-  .float-wa{position:fixed;bottom:26px;right:26px;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:60;
+  .float-wa{position:fixed;bottom:22px;right:22px;min-height:56px;border-radius:40px;display:inline-flex;align-items:center;gap:10px;padding:0 22px;z-index:60;
+    color:#173a2a;font-weight:500;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
     background:linear-gradient(180deg,var(--rose-1),var(--rose-2) 46%,var(--rose-3));box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 16px 32px -10px rgba(0,0,0,.6);transition:transform .25s}
-  .float-wa:hover{transform:scale(1.08)}
+  .float-wa:hover{transform:translateY(-2px)}
   .float-wa svg{color:#0c3539}
 
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
   .reveal.in{opacity:1;transform:none}
 
   @media(max-width:900px){
-    .menu,.nav-cta{display:none}
+    .menu{display:none}
+    .nav-cta{font-size:.66rem;padding:11px 18px;min-height:44px;width:auto}
     .burger{display:block}
     .menu.show{display:flex;position:absolute;top:78px;left:0;right:0;flex-direction:column;background:linear-gradient(180deg,rgba(7,24,26,.97),rgba(7,24,26,.92));backdrop-filter:blur(14px);padding:24px 28px;gap:20px;border-bottom:1px solid rgba(231,200,145,.1)}
     .hero-grid{grid-template-columns:1fr;gap:48px;text-align:center;min-height:auto;padding:48px 0}
@@ -229,6 +245,17 @@
     .hero-inset{display:none}.badge{left:50%;transform:translateX(-50%)}.explore{display:none}
     .about-grid,.price-grid{grid-template-columns:1fr;gap:48px}
     .feat-grid,.gallery,.cat-grid{grid-template-columns:1fr}
+    .btn-rose,.btn-ghost{width:100%;justify-content:center;padding:17px 24px}
+    .hero-btns{flex-direction:column;align-items:stretch;gap:12px}
+    .cat-chip{padding:11px 18px;font-size:.82rem}
+    .filter-row{gap:8px}
+    .stats{width:100%;justify-content:center;flex-wrap:wrap}
+    .stat{padding:14px 18px}
+    .esp-map{height:200px}
+    .jm-body{padding:26px 22px 30px}
+    .faq-q{font-size:1.15rem;padding:22px 4px}
+    .float-wa{padding:0 18px;font-size:.72rem;bottom:16px;right:16px}
+    .mid-cta .btn-rose{width:100%;justify-content:center}
     .g-wide{grid-column:auto}.g-tall{grid-row:auto;min-height:240px}
     .exp-badge{top:-24px;right:0}
     section{padding:82px 0}
@@ -249,6 +276,13 @@
   .rev-src{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   @media(max-width:900px){.rev-grid{grid-template-columns:1fr}}
   #espaco .esp-grid{display:grid;grid-template-columns:1fr .82fr;gap:58px;align-items:center}
+  .esp-local{margin-top:30px;border-radius:20px;overflow:hidden;border:1px solid rgba(231,200,145,.2);background:var(--panel);box-shadow:var(--shadow)}
+  .esp-map{width:100%;height:230px;border:0;display:block;filter:grayscale(.35) contrast(1.05)}
+  .esp-end{padding:20px 22px;display:flex;gap:14px;align-items:flex-start}
+  .esp-end .ic{flex:0 0 38px;height:38px;border-radius:11px;background:rgba(231,200,145,.1);border:1px solid rgba(231,200,145,.25);display:flex;align-items:center;justify-content:center;color:var(--rose-2)}
+  .esp-end .txt{flex:1;min-width:0}
+  .esp-end .txt b{font-family:var(--serif);font-weight:500;font-size:1rem;display:block;color:var(--cream);margin-bottom:3px}
+  .esp-end .txt span{color:var(--muted);font-size:.9rem;line-height:1.6;display:block}
   .esp-video{position:relative;max-width:320px;margin-left:auto;border-radius:28px;overflow:hidden;border:1px solid rgba(231,200,145,.18);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.06)}
   .esp-video video{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:#06181a}
   .esp-play-hint{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted-2);margin-top:14px;justify-content:center}
@@ -284,6 +318,7 @@
 "image":"https://keilabodypiercer.vercel.app/og.jpg",
 "url":"https://keilabodypiercer.vercel.app/",
 "telephone":"+5548996246137",
+"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"10:30","closes":"19:30"}],
 "address":{"@type":"PostalAddress","streetAddress":"Calçadão João Pinto, 30, 5º andar, sala 506","addressLocality":"Florianópolis","addressRegion":"SC","postalCode":"88010-420","addressCountry":"BR"},
 "geo":{"@type":"GeoCoordinates","latitude":-27.5985936,"longitude":-48.5500545},
 "aggregateRating":{"@type":"AggregateRating","ratingValue":"5","reviewCount":"6"},
@@ -299,14 +334,14 @@
     <nav>
       <ul class="menu" id="menu">
         <li><a href="#sobre">Sobre</a></li>
-        <li><a href="#trabalhos">Trabalhos</a></li>
         <li><a href="#catalogo">Catálogo</a></li>
+        <li><a href="#trabalhos">Trabalhos</a></li>
         <li><a href="#diferenciais">Diferenciais</a></li>
         <li><a href="#precos">Preços</a></li>
         <li><a href="#duvidas">Dúvidas</a></li>
       </ul>
     </nav>
-    <a href="#contato" class="btn-rose nav-cta">Agendar</a>
+    <a href="https://wa.me/5548996246137?text=Ol%C3%A1%2C%20Keila%21%20Vim%20pelo%20site%20e%20gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener" class="btn-rose nav-cta">Agendar</a>
     <button class="burger" id="burger" aria-label="Abrir menu">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
@@ -373,28 +408,6 @@
   </div>
 </section>
 
-<!-- TRABALHOS -->
-<section id="trabalhos">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <h2>Galeria de Trabalhos</h2>
-      <p>Uma seleção de piercings e composições realizados no estúdio. Toque na lupa para ampliar.</p>
-    </div>
-    <div class="gallery reveal">
-      <div class="photo g-tall">
-        <div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 1</div>
-      </div>
-      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 2</div></div>
-      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 3</div></div>
-      <div class="photo g-wide"><span class="zoom"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4M11 8v6M8 11h6"/></svg></span><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 4 (panorâmico)</div></div>
-      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 5</div></div>
-      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 6</div></div>
-      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 7</div></div>
-      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 8</div></div>
-    </div>
-  </div>
-</section>
-
 <!-- CATÁLOGO (vitrine pública) -->
 <section id="catalogo">
   <div class="wrap">
@@ -406,6 +419,28 @@
     <div class="reveal" id="locFilters" style="margin:-26px 0 18px"></div>
     <div class="cat-filters reveal" id="catFilters"></div>
     <div class="cat-grid" id="catGrid"><div class="cat-state">Carregando joias…</div></div>
+  </div>
+</section>
+
+<!-- TRABALHOS -->
+<section id="trabalhos">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2>Galeria de Trabalhos</h2>
+      <p>Uma seleção de piercings e composições realizados no estúdio.</p>
+    </div>
+    <div class="gallery reveal">
+      <div class="photo g-tall">
+        <div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 1</div>
+      </div>
+      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 2</div></div>
+      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 3</div></div>
+      <div class="photo g-wide"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 4 (panorâmico)</div></div>
+      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 5</div></div>
+      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 6</div></div>
+      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 7</div></div>
+      <div class="photo"><div><svg class="ph-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Trabalho 8</div></div>
+    </div>
   </div>
 </section>
 
@@ -422,7 +457,18 @@
           <li><span class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg></span>Espaço reservado, acolhedor e tranquilo</li>
           <li><span class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg></span>No Centro de Florianópolis, de fácil acesso</li>
         </ul>
-        <a href="https://www.google.com/maps/place/Keila+Body+Piercing/@-27.5985936,-48.5500545,17z/data=!4m12!1m5!8m4!1e2!2s115642748394829086716!3m1!1e1!3m5!1s0x952739381ff628b1:0x622ad7a26dad51bc!8m2!3d-27.5985936!4d-48.5500545!16s%2Fg%2F11yz8kcbm2" target="_blank" rel="noopener" class="btn-ghost">Como chegar</a>
+        <a href="https://www.google.com/maps/place/Keila+Body+Piercing/@-27.5985936,-48.5500545,17z/data=!4m12!1m5!8m4!1e2!2s115642748394829086716!3m1!1e1!3m5!1s0x952739381ff628b1:0x622ad7a26dad51bc!8m2!3d-27.5985936!4d-48.5500545!16s%2Fg%2F11yz8kcbm2" target="_blank" rel="noopener" class="btn-ghost"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>Como chegar</a>
+        <div class="esp-local">
+          <iframe class="esp-map" src="https://maps.google.com/maps?q=-27.5985936,-48.5500545&amp;z=16&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa do estúdio da Keila"></iframe>
+          <div class="esp-end">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+            <div class="txt"><b>Onde fica</b><span>Calçadão João Pinto, 30 · 5º andar, sala 506<br>Centro · Florianópolis/SC</span></div>
+          </div>
+          <div class="esp-end" style="border-top:1px solid rgba(231,200,145,.14)">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+            <div class="txt"><b>Horário de atendimento</b><span>Segunda a sábado · 10h30 às 19h30<br>Domingo · fechado</span></div>
+          </div>
+        </div>
       </div>
       <div class="reveal">
         <div class="esp-video">
@@ -515,6 +561,10 @@
         <div class="rev-by"><span class="rev-name">Herbert Rubio</span><span class="rev-src">via Google</span></div>
       </article>
     </div>
+    <div class="mid-cta reveal">
+      <p>Quer fazer parte dessas histórias?</p>
+      <a href="https://wa.me/5548996246137?text=Ol%C3%A1%2C%20Keila%21%20Vim%20pelo%20site%2C%20vi%20as%20avalia%C3%A7%C3%B5es%20e%20gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener" class="btn-rose"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5c-.1.2-.3.3-.1.6.1.3.6 1 1.3 1.6.9.8 1.6 1 1.9 1.2.2.1.4.1.5-.1l.6-.7c.2-.2.3-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg> Falar com a Keila</a>
+    </div>
   </div>
 </section>
 
@@ -554,7 +604,7 @@
           <li><span class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg></span>Cartilha de cuidados pós-piercing</li>
           <li><span class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg></span>Acompanhamento da cicatrização</li>
         </ul>
-        <a href="#contato" class="btn-rose">Pedir orçamento</a>
+        <a href="https://wa.me/5548996246137?text=Ol%C3%A1%2C%20Keila%21%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20os%20valores%20para%20o%20meu%20caso." target="_blank" rel="noopener" class="btn-rose"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5c-.1.2-.3.3-.1.6.1.3.6 1 1.3 1.6.9.8 1.6 1 1.9 1.2.2.1.4.1.5-.1l.6-.7c.2-.2.3-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg> Pedir orçamento</a>
       </div>
     </div>
   </div>
@@ -589,6 +639,10 @@
         <div class="faq-a"><p>Sim. Apresento opções adequadas à sua anatomia e ao tipo de perfuração, e juntas escolhemos a peça que combina segurança, conforto e o estilo que você deseja.</p></div>
       </div>
     </div>
+    <div class="mid-cta reveal">
+      <p>Ficou com alguma dúvida que não está aqui?</p>
+      <a href="https://wa.me/5548996246137?text=Ol%C3%A1%2C%20Keila%21%20Vim%20pelo%20site%20e%20fiquei%20com%20uma%20d%C3%BAvida%2C%20pode%20me%20ajudar%3F" target="_blank" rel="noopener" class="btn-rose"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5c-.1.2-.3.3-.1.6.1.3.6 1 1.3 1.6.9.8 1.6 1 1.9 1.2.2.1.4.1.5-.1l.6-.7c.2-.2.3-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg> Perguntar no WhatsApp</a>
+    </div>
   </div>
 </section>
 
@@ -612,13 +666,12 @@
   <div class="wrap">
     <a href="#" class="logo">Keila <span>Body Piercer</span></a>
     <p>Calçadão João Pinto, 30 · 5º andar, sala 506 · Centro, Florianópolis/SC · 88010-420</p>
+    <p style="margin-top:4px">Segunda a sábado · 10h30 às 19h30</p>
     <p style="margin-top:6px">© 2026 Keila Body Piercer · Todos os direitos reservados.</p>
   </div>
 </footer>
 
-<a href="https://wa.me/5548996246137?text=Ol%C3%A1%2C%20Keila!%20Vim%20pelo%20site%20e%20gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener" class="float-wa" aria-label="WhatsApp">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5c-.1.2-.3.3-.1.6.1.3.6 1 1.3 1.6.9.8 1.6 1 1.9 1.2.2.1.4.1.5-.1l.6-.7c.2-.2.3-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
-</a>
+<a href="https://wa.me/5548996246137?text=Ol%C3%A1%2C%20Keila%21%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20voc%C3%AA." target="_blank" rel="noopener" class="float-wa" aria-label="Falar no WhatsApp"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5c-.1.2-.3.3-.1.6.1.3.6 1 1.3 1.6.9.8 1.6 1 1.9 1.2.2.1.4.1.5-.1l.6-.7c.2-.2.3-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg><span class="fw-txt">Chamar no WhatsApp</span></a>
 
 <script>
   // header scroll
@@ -705,11 +758,15 @@
     g.innerHTML=list.map(j=>`
       <article class="jewel reveal" onclick="abrirJoia('${j.id}')">
         <div class="jewel-img">${j.categoria?`<span class="cat-badge">${j.categoria}</span>`:''}${j.foto_url?`<img src="${j.foto_url}" alt="${j.nome}">`:_ph}</div>
+        <span class="jewel-tap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4M11 8v6M8 11h6"/></svg></span>
         <div class="jewel-body">
           <h3>${j.nome}</h3>
           <div class="mat">${j.material||''}</div>
           <div class="jewel-divider"></div>
-          <div class="price">R$ ${j.preco}</div>
+          <div class="jewel-foot">
+            <span class="price">R$ ${j.preco}</span>
+            <span class="jewel-ver">Ver <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
         </div>
       </article>`).join('');
     g.querySelectorAll('.jewel.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4)*0.07+'s';catIO.observe(el);});
