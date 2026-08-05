@@ -40,7 +40,16 @@
   .login-card .hint{color:var(--muted);font-size:.92rem;margin-bottom:26px}
 
   label{display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:0 0 7px}
-  .loc-box{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:12px;margin-bottom:18px}
+  .loc-box{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px;margin-bottom:18px}
+  .loc-group{margin-bottom:14px}
+  .loc-group-lab{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-bottom:8px}
+  .loc-opts{display:flex;flex-wrap:wrap;gap:7px}
+  .loc-opt{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:7px 13px;font-size:.83rem;font-family:var(--sans);cursor:pointer;transition:all .18s}
+  .loc-opt:hover{border-color:var(--copper);color:var(--cream)}
+  .loc-opt.on{background:rgba(231,200,145,.16);border-color:var(--gold-2);color:var(--cream);font-weight:500}
+  .loc-opt.on::before{content:"✓ ";color:var(--gold-2)}
+  .loc-sel{font-size:.8rem;color:var(--cream-dim);margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line-soft)}
+  .loc-sel b{color:var(--gold-2);font-weight:500}
   .loc-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
   .loc-chips:empty{display:none}
   .loc-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(231,200,145,.12);border:1px solid rgba(231,200,145,.3);color:var(--cream);border-radius:20px;padding:6px 12px;font-size:.86rem}
@@ -160,13 +169,14 @@
       </div>
       <label>Onde vai o piercing (pode marcar vários)</label>
       <div class="loc-box">
-        <div class="loc-chips" id="locChips"></div>
+        <div class="loc-sel" id="locSel"></div>
+        <div id="locGroups"></div>
         <div class="loc-add">
-          <input type="text" id="locInput" list="locOptions" placeholder="Ex.: orelha, nariz, septo…" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addLocal();}">
+          <input type="text" id="locInput" list="locOptions" placeholder="Outro local não listado…" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addLocal();}">
           <datalist id="locOptions"></datalist>
-          <button type="button" onclick="addLocal()">+ Adicionar local</button>
+          <button type="button" onclick="addLocal()">+ Adicionar</button>
         </div>
-        <div class="loc-hint">Digite e aperte Enter (ou clique no botão). Os locais viram filtros no site.</div>
+        <div class="loc-hint">Toque nos locais acima para marcar. Use o campo só se faltar algum — ele entra na lista.</div>
       </div>
 
       <label>Preço (R$)</label>
@@ -245,7 +255,7 @@
   async function loadJoias(){
     const {data,error}=await sb.from('joias').select('*').order('criado_em',{ascending:false});
     if(error){toast('Erro ao carregar joias.',true);return;}
-    joias=data||[];renderCatOptions();renderLocOptions();renderList();
+    joias=data||[];renderCatOptions();renderLocOptions();renderLocChips();renderList();
   }
   const CATS_PADRAO=['Argolas','Pontos / Labrets','Correntes','Microdermais','Ornamentadas'];
   function renderCatOptions(){
@@ -268,25 +278,48 @@
   function previewFile(input){const f=input.files[0];if(!f)return;pendingFile=f;const url=URL.createObjectURL(f);document.getElementById('upText').innerHTML=`<img src="${url}"><div>Foto carregada — clique para trocar</div>`;}
 
   let locaisAtuais=[];
+  const LOCAIS_CATALOGO=[
+    ['Orelha',['Lóbulo','Hélix','Forward hélix','Anti-hélix','Flat','Tragus','Anti-tragus','Daith','Rook','Conch','Snug','Industrial']],
+    ['Nariz',['Nostril','Septo','Bridge','High nostril']],
+    ['Boca e lábios',['Labret','Vertical labret','Medusa','Monroe','Madonna','Ashley','Smiley','Língua']],
+    ['Rosto',['Sobrancelha','Bochecha','Maçã do rosto']],
+    ['Corpo',['Umbigo','Mamilo','Nuca','Microdermal']]
+  ];
+  function catalogoTodos(){return LOCAIS_CATALOGO.flatMap(g=>g[1]);}
   function renderLocChips(){
-    document.getElementById('locChips').innerHTML=locaisAtuais.map((l,i)=>
-      `<span class="loc-chip">${l}<button type="button" onclick="removeLocal(${i})" title="Remover">&times;</button></span>`).join('');
+    const sel=document.getElementById('locSel');
+    sel.innerHTML=locaisAtuais.length
+      ? 'Marcados: <b>'+locaisAtuais.join(', ')+'</b>'
+      : '<span style="color:var(--muted-2)">Nenhum local marcado ainda.</span>';
+    // locais personalizados (fora do catálogo)
+    const extras=[...new Set([...locaisAtuais,...joias.flatMap(j=>j.locais||[])])]
+      .filter(l=>!catalogoTodos().some(c=>c.toLowerCase()===l.toLowerCase()));
+    const grupos=[...LOCAIS_CATALOGO];
+    if(extras.length)grupos.push(['Outros',extras]);
+    document.getElementById('locGroups').innerHTML=grupos.map(([lab,opts])=>
+      `<div class="loc-group"><div class="loc-group-lab">${lab}</div><div class="loc-opts">`+
+      opts.map(o=>`<button type="button" class="loc-opt ${locaisAtuais.some(l=>l.toLowerCase()===o.toLowerCase())?'on':''}" onclick="toggleLocal('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')+
+      '</div></div>').join('');
   }
+  window.toggleLocal=function(v){
+    const i=locaisAtuais.findIndex(l=>l.toLowerCase()===v.toLowerCase());
+    if(i>=0)locaisAtuais.splice(i,1);else locaisAtuais.push(v);
+    renderLocChips();
+  };
   function renderLocOptions(){
-    const todos=[...new Set(joias.flatMap(j=>j.locais||[]))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    const todos=[...new Set([...catalogoTodos(),...joias.flatMap(j=>j.locais||[])])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
     document.getElementById('locOptions').innerHTML=todos.map(l=>`<option value="${l.replace(/"/g,'&quot;')}">`).join('');
   }
   window.addLocal=function(){
     const inp=document.getElementById('locInput');
     let v=(inp.value||'').trim().replace(/\s+/g,' ');
     if(!v)return;
-    const existentes=[...new Set(joias.flatMap(j=>j.locais||[]))];
+    const existentes=[...new Set([...catalogoTodos(),...joias.flatMap(j=>j.locais||[])])];
     const match=existentes.find(c=>c.toLowerCase()===v.toLowerCase());
     v=match||v;
     if(!locaisAtuais.some(l=>l.toLowerCase()===v.toLowerCase()))locaisAtuais.push(v);
     inp.value='';renderLocChips();
   };
-  window.removeLocal=function(i){locaisAtuais.splice(i,1);renderLocChips();};
 
   function normalizarCategoria(v){
     const t=(v||'').trim().replace(/\s+/g,' ');
@@ -296,6 +329,7 @@
     return match||t;
   }
   async function saveJoia(){
+    if((document.getElementById('locInput').value||'').trim())addLocal();
     const nome=document.getElementById('fName').value.trim();
     const preco=document.getElementById('fPrice').value;
     if(!nome||!preco){toast('Preencha pelo menos o nome e o preço.',true);return;}
