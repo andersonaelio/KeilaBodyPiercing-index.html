@@ -1,0 +1,6 @@
+{
+  "cleanUrls": true,
+  "headers": [
+    { "source": "/agendar", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+  ]
+}

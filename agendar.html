@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Escolher horário · Keila Body Piercer</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Keila Body Piercer">
+<meta property="og:title" content="Escolher horário · Keila Body Piercer">
+<meta property="og:description" content="Veja os horários abertos e reserve o seu. Florianópolis.">
+<meta property="og:image" content="https://keilabodypiercer.vercel.app/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b3034'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-style='italic' fill='%23e7c891' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* MAPA: 1 tokens · 2 base · 3 topo · 4 grade · 5 formulário · 6 confirmação */
+
+  /* 1 ── tokens (iguais aos do site) */
+  :root{
+    --cream:#f1ece6;--cream-dim:#e6ddd2;--muted:#8ba6a4;--muted-2:#5f7e7c;
+    --rose-1:#f6e1ba;--rose-2:#e7c891;--rose-3:#cf9f5e;--copper:#c9a86a;
+    --line:rgba(231,200,145,.14);--line-soft:rgba(231,200,145,.08);
+    --bg-2:#0a2426;--card:#0f3338;
+    --open:#5aa9a4;--open-soft:rgba(90,169,164,.13);
+    --serif:'Playfair Display',Georgia,serif;--sans:'Jost',system-ui,sans-serif;
+  }
+
+  /* 2 ── base */
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#04100f;color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(44% 38% at 12% 7%, rgba(231,200,145,.11), transparent 60%),
+      radial-gradient(65% 60% at 46% 48%, rgba(31,120,124,.20), transparent 72%),
+      linear-gradient(150deg,#0a2a2c 0%, #06191b 52%, #04100f 100%);}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.15}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+
+  .btn-rose{display:inline-flex;align-items:center;justify-content:center;gap:10px;color:#3a2c10;font-weight:500;letter-spacing:.13em;text-transform:uppercase;font-size:.78rem;padding:16px 30px;border-radius:40px;border:none;cursor:pointer;min-height:54px;font-family:var(--sans);
+    background:linear-gradient(180deg,var(--rose-1),var(--rose-2) 46%,var(--rose-3));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 14px 30px -10px rgba(207,159,94,.5);transition:transform .25s ease}
+  .btn-rose:hover{transform:translateY(-2px)}
+  .btn-rose:disabled{opacity:.55;transform:none;cursor:default}
+  .btn-ghost{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:30px;padding:10px 18px;background:none;cursor:pointer;font-family:var(--sans);transition:border-color .2s}
+  .btn-ghost:hover{border-color:var(--copper);color:var(--cream)}
+
+  /* 3 ── topo */
+  header{border-bottom:1px solid var(--line-soft)}
+  .topbar{max-width:760px;margin:0 auto;padding:0 22px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .logo{font-family:var(--serif);font-style:italic;font-size:1.35rem}
+  main{padding:38px 0 80px}
+  .head h1{font-size:2.1rem;margin-bottom:8px}
+  .head p{color:var(--muted);font-size:.98rem;max-width:52ch}
+
+  .aviso{display:flex;gap:13px;align-items:flex-start;background:var(--open-soft);border:1px solid rgba(90,169,164,.3);border-radius:14px;padding:15px 17px;margin:26px 0 30px;font-size:.93rem;color:var(--cream-dim)}
+  .aviso svg{flex:0 0 19px;margin-top:3px;color:var(--open)}
+  .aviso a{color:var(--rose-2);text-decoration:underline;text-underline-offset:3px}
+
+  /* 4 ── grade */
+  .dia{border-top:1px solid var(--line-soft);padding:20px 0 6px}
+  .dia:first-child{border-top:none;padding-top:0}
+  .dia h3{font-size:1.15rem;display:flex;align-items:baseline;gap:9px;margin-bottom:13px;text-transform:capitalize}
+  .dia h3 small{font-family:var(--sans);font-size:.79rem;color:var(--muted-2);text-transform:none}
+  .horas{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .hora{min-height:50px;border:1px solid var(--open);background:var(--open-soft);color:#a5dbd6;border-radius:12px;font-family:var(--sans);font-size:1rem;cursor:pointer;transition:transform .15s,background .15s}
+  .hora:hover{background:rgba(90,169,164,.22);transform:translateY(-1px)}
+  .hora.sel{background:linear-gradient(180deg,var(--rose-1),var(--rose-2) 46%,var(--rose-3));border-color:transparent;color:#3a2c10;font-weight:500}
+
+  .vazio{text-align:center;border:1px dashed var(--line);border-radius:16px;padding:38px 26px}
+  .vazio h3{font-size:1.25rem;margin-bottom:10px}
+  .vazio p{color:var(--muted);margin-bottom:22px;font-size:.96rem}
+  .carregando{text-align:center;color:var(--muted-2);padding:50px 0}
+
+  /* 5 ── formulário */
+  .form{background:var(--bg-2);border:1px solid var(--line);border-radius:16px;padding:26px 24px 28px;margin-top:30px}
+  .form h2{font-size:1.4rem;margin-bottom:3px}
+  .form .quando{color:var(--rose-2);font-size:.95rem;margin-bottom:22px;text-transform:capitalize}
+  label{display:block;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:0 0 7px}
+  input,textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--cream);font-family:var(--sans);font-size:1rem;padding:14px 15px;margin-bottom:17px;outline:none;transition:border-color .2s}
+  input:focus,textarea:focus{border-color:var(--copper)}
+  textarea{resize:vertical;min-height:76px}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:17px}
+  .opt{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:12px;padding:14px 12px;font-family:var(--sans);font-size:.93rem;cursor:pointer;text-align:left;transition:all .18s;min-height:52px}
+  .opt:hover{border-color:var(--copper);color:var(--cream)}
+  .opt.on{background:rgba(231,200,145,.14);border-color:var(--rose-2);color:var(--cream)}
+  .erro{color:#e8a08f;font-size:.9rem;margin-bottom:14px;display:none}
+
+  /* 6 ── confirmação */
+  .ok{text-align:center;padding:12px 0 4px}
+  .ok-ico{width:62px;height:62px;border-radius:50%;background:var(--open-soft);border:1px solid var(--open);color:var(--open);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .ok h2{font-size:1.75rem;margin-bottom:8px}
+  .ok .quando{color:var(--rose-2);font-size:1.08rem;margin-bottom:16px;text-transform:capitalize}
+  .ok p{color:var(--muted);margin-bottom:26px;font-size:.97rem}
+
+  .hidden{display:none}
+  @media(max-width:560px){
+    .head h1{font-size:1.75rem}
+    .horas{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:7px}
+    .opts{grid-template-columns:1fr}
+    .wrap,.topbar{padding:0 18px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <a href="/" class="logo">Keila</a>
+    <a href="/" class="btn-ghost">← Voltar ao site</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- lista de horários -->
+  <div id="viewGrade">
+    <div class="head">
+      <h1>Escolha seu horário</h1>
+      <p>Estes são os horários abertos. Toque no que preferir para reservar.</p>
+    </div>
+
+    <div class="aviso">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5Z"/></svg>
+      <div>É sua primeira vez comigo? Me chama no WhatsApp antes que a gente conversa sobre o que você quer fazer. <a href="https://wa.me/5548996560573?text=Ol%C3%A1%2C%20Keila!%20Vim%20pelo%20site%20e%20queria%20tirar%20uma%20d%C3%BAvida%20antes%20de%20agendar." target="_blank" rel="noopener">Falar no WhatsApp</a></div>
+    </div>
+
+    <div id="grade"><div class="carregando">Carregando horários…</div></div>
+  </div>
+
+  <!-- formulário -->
+  <div id="viewForm" class="hidden">
+    <div class="form">
+      <h2>Quase lá</h2>
+      <div class="quando" id="fQuando">—</div>
+
+      <label for="fNome">Seu nome</label>
+      <input type="text" id="fNome" placeholder="Nome e sobrenome" autocomplete="name">
+
+      <label for="fZap">WhatsApp</label>
+      <input type="tel" id="fZap" placeholder="(48) 99999-9999" autocomplete="tel" inputmode="numeric">
+
+      <label for="fNasc">Data de nascimento</label>
+      <input type="date" id="fNasc" autocomplete="bday">
+
+      <label>O que você quer fazer?</label>
+      <div class="opts" id="fOpts">
+        <button type="button" class="opt" data-v="piercing">Colocar um piercing</button>
+        <button type="button" class="opt" data-v="troca_joia">Trocar de joia</button>
+        <button type="button" class="opt" data-v="duvida">Tirar dúvida ou avaliar</button>
+        <button type="button" class="opt" data-v="outro">Outro</button>
+      </div>
+
+      <label for="fObs">Quer contar mais? (opcional)</label>
+      <textarea id="fObs" rows="2" placeholder="Ex.: helix na orelha direita"></textarea>
+
+      <p class="erro" id="fErro"></p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-rose" id="fBtn" onclick="reservar()" style="flex:1;min-width:200px">Reservar horário</button>
+        <button class="btn-ghost" onclick="voltarGrade()">Escolher outro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- confirmação -->
+  <div id="viewOk" class="hidden">
+    <div class="ok">
+      <div class="ok-ico">
+        <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>
+      </div>
+      <h2>Horário reservado</h2>
+      <div class="quando" id="okQuando">—</div>
+      <p>A Keila vai confirmar com você pelo WhatsApp. Toque no botão para avisar que você reservou.</p>
+      <a class="btn-rose" id="okZap" href="#" target="_blank" rel="noopener">Avisar no WhatsApp</a>
+      <div style="margin-top:22px"><a href="/" class="btn-ghost">Voltar ao site</a></div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SB_URL='https://ciwyxnyeusmjblvvanph.supabase.co';
+  const SB_KEY='sb_publishable_bcxBHJT2vhPsh3fPoFticw_kUw40F19';
+  const ZAP='5548996560573';
+  const sb=window.supabase.createClient(SB_URL,SB_KEY);
+
+  const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  let slots=[], escolhido=null, intencao=null;
+
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dataLocal=(d,h)=>new Date(`${d}T${h}`);
+
+  function rotulo(dataStr,hora){
+    const d=dataLocal(dataStr,hora);
+    return `${DIAS[d.getDay()]}, ${d.getDate()} de ${MESES[d.getMonth()]} às ${hora.slice(0,5)}`;
+  }
+  function view(v){
+    for(const id of ['viewGrade','viewForm','viewOk'])
+      document.getElementById(id).classList.toggle('hidden',id!=='view'+v);
+    window.scrollTo({top:0});
+  }
+
+  async function carregar(){
+    const limite=new Date(Date.now()+2*60*60*1000);   // antecedência mínima de 2h
+    const hoje=new Date();
+    const ate=new Date(); ate.setDate(ate.getDate()+60);
+    const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+    const {data,error}=await sb.from('horarios').select('id,data,hora')
+      .gte('data',fmt(hoje)).lte('data',fmt(ate))
+      .order('data').order('hora');
+
+    if(error){
+      document.getElementById('grade').innerHTML=
+        '<div class="vazio"><h3>Não consegui carregar</h3><p>Tenta de novo daqui a pouco, ou me chama no WhatsApp.</p>'+btnZap()+'</div>';
+      return;
+    }
+    slots=(data||[]).filter(s=>dataLocal(s.data,s.hora)>limite);
+    render();
+  }
+
+  function btnZap(txt){
+    const t=txt||'Olá, Keila! Vim pelo site e queria agendar um horário.';
+    return `<a class="btn-rose" href="https://wa.me/${ZAP}?text=${encodeURIComponent(t)}" target="_blank" rel="noopener">Falar no WhatsApp</a>`;
+  }
+
+  function render(){
+    if(!slots.length){
+      document.getElementById('grade').innerHTML=
+        `<div class="vazio"><h3>Sem horários abertos no momento</h3>
+         <p>A agenda desta semana já fechou. Me chama no WhatsApp que a gente encontra um horário para você.</p>${btnZap()}</div>`;
+      return;
+    }
+    const porDia={};
+    slots.forEach(s=>{(porDia[s.data]=porDia[s.data]||[]).push(s);});
+
+    document.getElementById('grade').innerHTML=Object.keys(porDia).sort().map(dia=>{
+      const d=dataLocal(dia,'12:00:00');
+      const botoes=porDia[dia].map(s=>
+        `<button class="hora" onclick="escolher('${s.id}')">${s.hora.slice(0,5)}</button>`).join('');
+      return `<div class="dia">
+        <h3>${DIAS[d.getDay()]} <small>${d.getDate()} de ${MESES[d.getMonth()]}</small></h3>
+        <div class="horas">${botoes}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function escolher(id){
+    escolhido=slots.find(s=>s.id===id);
+    if(!escolhido)return;
+    document.getElementById('fQuando').textContent=rotulo(escolhido.data,escolhido.hora);
+    view('Form');
+  }
+  function voltarGrade(){escolhido=null;view('Grade');}
+
+  document.getElementById('fOpts').addEventListener('click',e=>{
+    const b=e.target.closest('.opt'); if(!b)return;
+    intencao=b.dataset.v;
+    document.querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o===b));
+  });
+
+  document.getElementById('fZap').addEventListener('input',e=>{
+    let d=e.target.value.replace(/\D/g,'').slice(0,11);
+    e.target.value = d.length<=2 ? d
+      : d.length<=6 ? `(${d.slice(0,2)}) ${d.slice(2)}`
+      : d.length<=10 ? `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`
+      : `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  });
+
+  function falha(msg){
+    const e=document.getElementById('fErro');
+    e.textContent=msg; e.style.display='block';
+    document.getElementById('fBtn').disabled=false;
+    document.getElementById('fBtn').textContent='Reservar horário';
+  }
+
+  async function reservar(){
+    const nome=document.getElementById('fNome').value.trim();
+    const zap=document.getElementById('fZap').value.replace(/\D/g,'');
+    const nasc=document.getElementById('fNasc').value;
+    const obs=document.getElementById('fObs').value.trim();
+    document.getElementById('fErro').style.display='none';
+
+    if(nome.length<2||!nome.includes(' '))return falha('Escreva seu nome e sobrenome.');
+    if(zap.length<10||zap.length>11)return falha('Confira o número do WhatsApp, com DDD.');
+    if(!nasc)return falha('Preencha sua data de nascimento.');
+    if(new Date(nasc+'T12:00')>new Date())return falha('Essa data de nascimento não está certa.');
+    if(!intencao)return falha('Escolha o que você quer fazer.');
+
+    const btn=document.getElementById('fBtn');
+    btn.disabled=true; btn.textContent='Reservando…';
+
+    const {data,error}=await sb.rpc('reservar_horario',{
+      p_horario_id:escolhido.id, p_nome:nome, p_whatsapp:zap,
+      p_nascimento:nasc, p_intencao:intencao, p_observacao:obs||null
+    });
+
+    if(error){
+      const m=error.message||'';
+      if(m.includes('horario_indisponivel'))     return falha('Alguém acabou de reservar esse horário. Escolha outro.');
+      if(m.includes('antecedencia_minima'))      return falha('Esse horário está muito próximo. Escolha um mais adiante.');
+      if(m.includes('limite_agendamentos'))      return falha('Você já tem horários reservados. Me chama no WhatsApp para marcar mais.');
+      if(m.includes('whatsapp_invalido'))        return falha('Confira o número do WhatsApp, com DDD.');
+      if(m.includes('nascimento_invalido'))      return falha('Essa data de nascimento não está certa.');
+      return falha('Não consegui reservar agora. Tenta de novo ou me chama no WhatsApp.');
+    }
+
+    const quando=rotulo(escolhido.data,escolhido.hora);
+    const idade=Math.floor((Date.now()-new Date(nasc+'T12:00'))/31557600000);
+    document.getElementById('okQuando').textContent=quando;
+
+    let msg=`Oi, Keila! Acabei de reservar um horário pelo site: ${quando}. Meu nome é ${nome}.`;
+    if(idade<18)msg+=' Tenho menos de 18 anos, vou com meu responsável.';
+    if(obs)msg+=` ${obs}`;
+    document.getElementById('okZap').href=`https://wa.me/${ZAP}?text=${encodeURIComponent(msg)}`;
+
+    view('Ok');
+  }
+
+  carregar();
+</script>
+</body>
+</html>
