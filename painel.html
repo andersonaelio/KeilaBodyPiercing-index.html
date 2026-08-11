@@ -125,6 +125,7 @@
   .slot.reservado span{display:block;font-size:.66rem;font-weight:400;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .slot.auto{border-style:dashed;border-color:var(--line);color:var(--muted-2)}
   .slot.auto span{display:block;font-size:.62rem;letter-spacing:.04em}
+  .slot.extra::after{content:"seu horário";display:block;font-size:.6rem;letter-spacing:.04em;opacity:.7}
   .slot.add{border-style:dashed;border-color:var(--line);color:var(--muted-2);font-size:1.15rem}
   .slot.passado{opacity:.32;cursor:default}
   .slot.passado:hover{border-color:var(--line-soft);color:var(--muted-2)}
@@ -452,10 +453,15 @@
     if(s&&s.status==='fechado'){
       return `<button class="slot auto" onclick="toggleSlot('${dia}','${hora}')">${hhmm}<span>folga</span></button>`;
     }
-    const cls='slot'+(s?' livre':'')+(passado&&!s?' passado':'');
+    const cls='slot'+(s?' livre':'')+(passado&&!s?' passado':'')+(ehPadrao(hora)?'':' extra');
     const act=passado&&!s?'':`onclick="toggleSlot('${dia}','${hora}')"`;
     return `<button class="${cls}" ${act}>${hhmm}</button>`;
   }
+
+  const ehPadrao=hora=>{
+    const [hh,mm]=hora.split(':').map(Number);
+    return mm===0 && hh>=HORA_INI && hh<=HORA_FIM;
+  };
 
   async function toggleSlot(dia,hora){
     const s=slots.find(x=>x.data===dia&&x.hora===hora);
@@ -466,8 +472,11 @@
         if(error){toast('Não consegui reabrir esse horário.',true);return;}
         await loadHorarios(true);return;
       }
+      // horário fora da grade some da tela ao fechar — confirma antes
+      if(!ehPadrao(hora) && !confirm(`Apagar o horário das ${hora.slice(0,5)}?\n\nEle sai da grade. Para ter de novo, use o "+".`))return;
       const {error}=await sb.from('horarios').delete().eq('id',s.id);
       if(error){toast('Não consegui fechar esse horário.',true);return;}
+      if(!ehPadrao(hora))toast(`Horário das ${hora.slice(0,5)} apagado.`);
     }else{
       const {error}=await sb.from('horarios').insert({data:dia,hora,status:'livre'});
       if(error){toast('Não consegui abrir esse horário.',true);return;}
