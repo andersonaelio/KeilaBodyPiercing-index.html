@@ -3,154 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex">
-<title>Painel · Keila Body Piercer</title>
+<meta name="robots" content="noindex, nofollow">
+<title>Escolher horário · Keila Body Piercer</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Keila Body Piercer">
+<meta property="og:title" content="Escolher horário · Keila Body Piercer">
+<meta property="og:description" content="Veja os horários abertos e reserve o seu. Florianópolis.">
+<meta property="og:image" content="https://keilabodypiercer.vercel.app/og.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b3034'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-style='italic' fill='%23e7c891' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* MAPA: 1 tokens · 2 base · 3 topo · 4 grade · 5 formulário · 6 confirmação */
+
+  /* 1 ── tokens (iguais aos do site) */
   :root{
-    --bg:#06181a;--bg-2:#0a2426;--card:#0f3338;--card-2:#0a2629;
-    --line:#2b5a5f;--line-soft:#1c474b;--cream:#f1ece6;--cream-dim:#e6ddd2;
-    --muted:#9ab4b6;--muted-2:#6e8d8f;
-    --open:#5aa9a4;--open-soft:rgba(90,169,164,.14);
-    --gold-1:#f3ddb4;--gold-2:#e7c891;--gold-3:#d6b06a;--copper:#c9a86a;
+    --cream:#f1ece6;--cream-dim:#e6ddd2;--muted:#8ba6a4;--muted-2:#5f7e7c;
+    --rose-1:#f6e1ba;--rose-2:#e7c891;--rose-3:#cf9f5e;--copper:#c9a86a;
+    --line:rgba(231,200,145,.14);--line-soft:rgba(231,200,145,.08);
+    --bg-2:#0a2426;--card:#0f3338;
+    --open:#5aa9a4;--open-soft:rgba(90,169,164,.13);
     --serif:'Playfair Display',Georgia,serif;--sans:'Jost',system-ui,sans-serif;
   }
+
+  /* 2 ── base */
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#04100f;color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased;position:relative}
-  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(44% 38% at 12% 7%,rgba(231,200,145,.09),transparent 60%),radial-gradient(65% 60% at 46% 48%,rgba(31,120,124,.16),transparent 72%),linear-gradient(150deg,#0a2a2c,#06191b 52%,#04100f);}
+  body{background:#04100f;color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(44% 38% at 12% 7%, rgba(231,200,145,.11), transparent 60%),
+      radial-gradient(65% 60% at 46% 48%, rgba(31,120,124,.20), transparent 72%),
+      linear-gradient(150deg,#0a2a2c 0%, #06191b 52%, #04100f 100%);}
   a{color:inherit;text-decoration:none}
-  .wrap{max-width:880px;margin:0 auto;padding:0 28px}
-  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.2}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.15}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
 
-  .btn-rose{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 46%,var(--gold-3));color:#3a2c10;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:.76rem;padding:13px 24px;border-radius:40px;border:none;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 26px -10px rgba(207,159,94,.5);transition:transform .2s}
+  .btn-rose{display:inline-flex;align-items:center;justify-content:center;gap:10px;color:#3a2c10;font-weight:500;letter-spacing:.13em;text-transform:uppercase;font-size:.78rem;padding:16px 30px;border-radius:40px;border:none;cursor:pointer;min-height:54px;font-family:var(--sans);
+    background:linear-gradient(180deg,var(--rose-1),var(--rose-2) 46%,var(--rose-3));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 14px 30px -10px rgba(207,159,94,.5);transition:transform .25s ease}
   .btn-rose:hover{transform:translateY(-2px)}
-  .btn-ghost{display:inline-flex;align-items:center;gap:9px;background:var(--card);color:var(--cream);font-weight:400;letter-spacing:.1em;text-transform:uppercase;font-size:.72rem;padding:11px 20px;border-radius:40px;border:1px solid var(--line);cursor:pointer;transition:border-color .2s}
-  .btn-ghost:hover{border-color:var(--copper)}
+  .btn-rose:disabled{opacity:.55;transform:none;cursor:default}
+  .btn-ghost{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:30px;padding:10px 18px;background:none;cursor:pointer;font-family:var(--sans);transition:border-color .2s}
+  .btn-ghost:hover{border-color:var(--copper);color:var(--cream)}
 
+  /* 3 ── topo */
   header{border-bottom:1px solid var(--line-soft)}
-  .topbar{max-width:880px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:74px;gap:14px}
-  .logo{font-family:var(--serif);font-style:italic;font-size:1.4rem;display:flex;align-items:baseline;gap:9px}
-  .logo span{font-family:var(--sans);font-style:normal;font-size:.58rem;letter-spacing:.32em;color:var(--muted);text-transform:uppercase}
+  .topbar{max-width:760px;margin:0 auto;padding:0 22px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .logo{font-family:var(--serif);font-style:italic;font-size:1.35rem}
+  main{padding:38px 0 80px}
+  .head h1{font-size:2.1rem;margin-bottom:8px}
+  .head p{color:var(--muted);font-size:.98rem;max-width:52ch}
 
-  main{padding:60px 0 90px}
+  .aviso{display:flex;gap:13px;align-items:flex-start;background:var(--open-soft);border:1px solid rgba(90,169,164,.3);border-radius:14px;padding:15px 17px;margin:26px 0 30px;font-size:.93rem;color:var(--cream-dim)}
+  .aviso svg{flex:0 0 19px;margin-top:3px;color:var(--open)}
+  .aviso a{color:var(--rose-2);text-decoration:underline;text-underline-offset:3px}
 
-  .login-card{max-width:420px;margin:40px auto 0;background:var(--bg-2);border:1px solid var(--line);border-radius:22px;padding:36px 34px 40px}
-  .login-card h2{font-size:1.7rem;margin-bottom:6px}
-  .login-card .hint{color:var(--muted);font-size:.92rem;margin-bottom:26px}
+  /* 4 ── grade */
+  .dia{border-top:1px solid var(--line-soft);padding:20px 0 6px}
+  .dia:first-child{border-top:none;padding-top:0}
+  .dia h3{font-size:1.15rem;display:flex;align-items:baseline;gap:9px;margin-bottom:13px;text-transform:capitalize}
+  .dia h3 small{font-family:var(--sans);font-size:.79rem;color:var(--muted-2);text-transform:none}
+  .horas{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .hora{min-height:50px;border:1px solid var(--open);background:var(--open-soft);color:#a5dbd6;border-radius:12px;font-family:var(--sans);font-size:1rem;cursor:pointer;transition:transform .15s,background .15s}
+  .hora:hover{background:rgba(90,169,164,.22);transform:translateY(-1px)}
+  .hora.sel{background:linear-gradient(180deg,var(--rose-1),var(--rose-2) 46%,var(--rose-3));border-color:transparent;color:#3a2c10;font-weight:500}
 
-  label{display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:0 0 7px}
-  .loc-box{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px;margin-bottom:18px}
-  .loc-group{margin-bottom:14px}
-  .loc-group-lab{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-bottom:8px}
-  .loc-opts{display:flex;flex-wrap:wrap;gap:7px}
-  .loc-opt{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:7px 13px;font-size:.83rem;font-family:var(--sans);cursor:pointer;transition:all .18s}
-  .loc-opt:hover{border-color:var(--copper);color:var(--cream)}
-  .loc-opt.on{background:rgba(231,200,145,.16);border-color:var(--gold-2);color:var(--cream);font-weight:500}
-  .loc-opt.on::before{content:"✓ ";color:var(--gold-2)}
-  .loc-sel{font-size:.8rem;color:var(--cream-dim);margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line-soft)}
-  .loc-sel b{color:var(--gold-2);font-weight:500}
-  .loc-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-  .loc-chips:empty{display:none}
-  .loc-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(231,200,145,.12);border:1px solid rgba(231,200,145,.3);color:var(--cream);border-radius:20px;padding:6px 12px;font-size:.86rem}
-  .loc-chip button{background:none;border:none;color:var(--gold-2);cursor:pointer;font-size:1.1rem;line-height:1;padding:0}
-  .loc-chip button:hover{color:#e8a08f}
-  .loc-add{display:flex;gap:8px}
-  .loc-add input{margin-bottom:0}
-  .loc-add button{white-space:nowrap;background:rgba(231,200,145,.1);border:1px solid rgba(231,200,145,.3);color:var(--gold-2);border-radius:12px;padding:0 16px;cursor:pointer;font-family:var(--sans);font-size:.8rem;letter-spacing:.04em}
-  .loc-add button:hover{background:rgba(231,200,145,.18)}
-  .loc-hint{font-size:.76rem;color:var(--muted-2);margin-top:8px}
-  textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--cream);font-family:var(--sans);font-size:.95rem;padding:13px 15px;margin-bottom:18px;outline:none;resize:vertical;transition:border-color .2s}
-  textarea:focus{border-color:var(--copper)}
-  input,select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--cream);font-family:var(--sans);font-size:.95rem;padding:13px 15px;margin-bottom:18px;outline:none;transition:border-color .2s}
-  input:focus,select:focus{border-color:var(--copper)}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .vazio{text-align:center;border:1px dashed var(--line);border-radius:16px;padding:38px 26px}
+  .vazio h3{font-size:1.25rem;margin-bottom:10px}
+  .vazio p{color:var(--muted);margin-bottom:22px;font-size:.96rem}
+  .carregando{text-align:center;color:var(--muted-2);padding:50px 0}
 
-  .manage-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:28px}
-  .manage-head h2{font-size:2rem}
-  .manage-head p{color:var(--muted);font-size:.92rem;margin-top:4px}
+  /* 5 ── formulário */
+  .form{background:var(--bg-2);border:1px solid var(--line);border-radius:16px;padding:26px 24px 28px;margin-top:30px}
+  .form h2{font-size:1.4rem;margin-bottom:3px}
+  .form .quando{color:var(--rose-2);font-size:.95rem;margin-bottom:22px;text-transform:capitalize}
+  label{display:block;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:0 0 7px}
+  input,textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--cream);font-family:var(--sans);font-size:1rem;padding:14px 15px;margin-bottom:17px;outline:none;transition:border-color .2s}
+  input:focus,textarea:focus{border-color:var(--copper)}
+  textarea{resize:vertical;min-height:76px}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:17px}
+  .opt{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:12px;padding:14px 12px;font-family:var(--sans);font-size:.93rem;cursor:pointer;text-align:left;transition:all .18s;min-height:52px}
+  .opt:hover{border-color:var(--copper);color:var(--cream)}
+  .opt.on{background:rgba(231,200,145,.14);border-color:var(--rose-2);color:var(--cream)}
+  .erro{color:#e8a08f;font-size:.9rem;margin-bottom:14px;display:none}
 
-  .card{background:var(--bg-2);border:1px solid var(--line);border-radius:20px;padding:30px 30px 34px;margin-bottom:24px}
-  .card h3{font-size:1.3rem;margin-bottom:18px}
+  /* 6 ── confirmação */
+  .ok{text-align:center;padding:12px 0 4px}
+  .ok-ico{width:62px;height:62px;border-radius:50%;background:var(--open-soft);border:1px solid var(--open);color:var(--open);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .ok h2{font-size:1.75rem;margin-bottom:8px}
+  .ok .quando{color:var(--rose-2);font-size:1.08rem;margin-bottom:16px;text-transform:capitalize}
+  .ok p{color:var(--muted);margin-bottom:26px;font-size:.97rem}
 
-  .admin-list{display:flex;flex-direction:column;gap:12px}
-  .admin-row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line-soft);border-radius:14px;padding:12px}
-  .admin-row .thumb{width:54px;height:54px;border-radius:10px;background:linear-gradient(160deg,#13474c,#0d3539);flex:0 0 54px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted-2)}
-  .admin-row .thumb img{width:100%;height:100%;object-fit:cover}
-  .admin-row .info{flex:1;min-width:0}
-  .admin-row .info b{font-family:var(--serif);font-weight:500;font-size:1.08rem;display:block}
-  .admin-row .info small{color:var(--muted)}
-  .admin-row .acts{display:flex;gap:8px}
-  .icon-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-  .icon-btn:hover{border-color:var(--copper);color:var(--cream)}
-  .icon-btn.del:hover{border-color:#8a5a52;color:#e8a08f}
-  .list-empty{text-align:center;color:var(--muted-2);padding:30px;border:1px dashed var(--line);border-radius:14px}
-
-  .uploader{border:1px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted-2);cursor:pointer;margin-bottom:18px;transition:border-color .2s}
-  .uploader:hover{border-color:var(--copper)}
-  .uploader img{max-height:120px;border-radius:10px;margin:0 auto 8px}
-
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--copper);color:var(--cream);padding:13px 22px;border-radius:30px;font-size:.9rem;z-index:80;opacity:0;transition:all .3s;pointer-events:none}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .toast.err{border-color:#b06a60}
-  /* ── abas ── */
-  .tabs{display:flex;gap:22px;border-bottom:1px solid var(--line-soft);margin-bottom:30px}
-  .tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted-2);font-family:var(--sans);font-size:.78rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:14px 2px;margin-bottom:-1px;cursor:pointer;transition:color .2s,border-color .2s}
-  .tab:hover{color:var(--cream-dim)}
-  .tab.on{color:var(--gold-2);border-bottom-color:var(--gold-2)}
-
-  /* ── grade de horários ── */
-  .wk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
-  .wk-nav b{font-family:var(--serif);font-weight:500;font-size:1.18rem}
-  .wk-arrow{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;font-size:1.1rem;transition:all .2s}
-  .wk-arrow:hover:not(:disabled){border-color:var(--copper);color:var(--cream)}
-  .wk-arrow:disabled{opacity:.3;cursor:default}
-  .wk-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.78rem;color:var(--muted-2);margin-bottom:22px}
-  .wk-legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-
-  .day{border-top:1px solid var(--line-soft);padding:14px 0 4px}
-  .day:first-child{border-top:none;padding-top:0}
-  .day-head{display:flex;align-items:baseline;gap:10px;margin-bottom:13px;cursor:pointer;user-select:none;padding:4px 0}
-  .day-head:hover h4{color:var(--gold-2)}
-  .caret{color:var(--muted-2);font-size:1.15rem;line-height:1;transition:transform .2s;display:inline-block;align-self:center}
-  .caret.on{transform:rotate(90deg);color:var(--gold-2)}
-  .day-head h4{font-family:var(--serif);font-weight:500;font-size:1.12rem}
-  .day-head small{color:var(--muted-2);font-size:.78rem}
-  .day-all{margin-left:auto;background:none;border:none;color:var(--muted-2);font-family:var(--sans);font-size:.74rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 4px}
-  .day-all:hover{color:var(--gold-2)}
-  .day-head .cnt{margin-left:14px;white-space:nowrap;font-size:.74rem;color:var(--muted-2)}
-  .slots[hidden]{display:none}
-  .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:7px}
-  .slot{min-height:46px;border:1px solid var(--line-soft);background:transparent;color:var(--muted-2);border-radius:11px;padding:9px 5px;font-family:var(--sans);font-size:.92rem;cursor:pointer;transition:border-color .18s,color .18s;text-align:center;line-height:1.25}
-  .slot:hover{border-color:var(--copper);color:var(--cream-dim)}
-  .slot.livre{border-color:var(--open);background:var(--open-soft);color:#8fd3ce}
-  .slot.reservado{background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 46%,var(--gold-3));border-color:transparent;color:#3a2c10;font-weight:500}
-  .slot.reservado span{display:block;font-size:.66rem;font-weight:400;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .slot.auto{border-style:dashed;border-color:var(--line);color:var(--muted-2)}
-  .slot.auto span{display:block;font-size:.62rem;letter-spacing:.04em}
-  .slot.extra::after{content:"seu horário";display:block;font-size:.6rem;letter-spacing:.04em;opacity:.7}
-  .slot.add{border-style:dashed;border-color:var(--line);color:var(--muted-2);font-size:1.15rem}
-  .slot.passado{opacity:.32;cursor:default}
-  .slot.passado:hover{border-color:var(--line-soft);color:var(--muted-2)}
-
-  .sheet{position:fixed;inset:0;background:rgba(4,16,15,.75);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
-  .sheet.hidden{display:none}
-  .sheet-box{background:var(--bg-2);border:1px solid var(--line);border-radius:18px;padding:28px 26px;max-width:400px;width:100%}
-  .sheet-box h3{font-size:1.35rem;margin-bottom:4px}
-  .sheet-box .when{color:var(--gold-2);font-size:.9rem;margin-bottom:20px}
-  .sheet-box dl{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;font-size:.92rem;margin-bottom:22px}
-  .sheet-box dt{color:var(--muted-2);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;padding-top:3px}
-  .sheet-box dd{color:var(--cream-dim);word-break:break-word}
-
-  /* utilitário — fica por último de propósito, pra vencer os display: acima */
   .hidden{display:none}
-
   @media(max-width:560px){
-    .row2{grid-template-columns:1fr}
-    .tabs{gap:16px}
-    .slots{grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:6px}
+    .head h1{font-size:1.75rem}
+    .horas{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:7px}
+    .opts{grid-template-columns:1fr}
+    .wrap,.topbar{padding:0 18px}
   }
 </style>
 </head>
@@ -158,597 +108,221 @@
 
 <header>
   <div class="topbar">
-    <a href="index.html" class="logo">Keila <span>Painel</span></a>
-    <div style="display:flex;gap:10px">
-      <a href="index.html" class="btn-ghost">← Ver site</a>
-      <button class="btn-ghost hidden" id="logoutBtn" onclick="doLogout()">Sair</button>
-    </div>
+    <a href="/" class="logo">Keila</a>
+    <a href="/" class="btn-ghost">← Voltar ao site</a>
   </div>
 </header>
 
 <main class="wrap">
 
-  <div id="loginView">
-    <div class="login-card">
-      <h2>Painel da Keila</h2>
-      <p class="hint">Entre com seu e-mail e senha para gerenciar as joias do catálogo.</p>
-      <label>E-mail</label>
-      <input type="email" id="email" placeholder="seu@email.com" autocomplete="username">
-      <label>Senha</label>
-      <input type="password" id="pwd" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="btn-rose" id="loginBtn" onclick="doLogin()" style="width:100%;justify-content:center">Entrar</button>
-      <p class="hint" id="loginErr" style="color:#e8a08f;margin:14px 0 0;display:none"></p>
+  <!-- lista de horários -->
+  <div id="viewGrade">
+    <div class="head">
+      <h1>Escolha seu horário</h1>
+      <p>Estes são os horários abertos. Toque no que preferir para reservar.</p>
+    </div>
+
+    <div class="aviso">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5Z"/></svg>
+      <div>É sua primeira vez comigo? Me chama no WhatsApp antes que a gente conversa sobre o que você quer fazer. <a href="https://wa.me/5548996560573?text=Ol%C3%A1%2C%20Keila!%20Vim%20pelo%20site%20e%20queria%20tirar%20uma%20d%C3%BAvida%20antes%20de%20agendar." target="_blank" rel="noopener">Falar no WhatsApp</a></div>
+    </div>
+
+    <div id="grade"><div class="carregando">Carregando horários…</div></div>
+  </div>
+
+  <!-- formulário -->
+  <div id="viewForm" class="hidden">
+    <div class="form">
+      <h2>Quase lá</h2>
+      <div class="quando" id="fQuando">—</div>
+
+      <label for="fNome">Seu nome</label>
+      <input type="text" id="fNome" placeholder="Como a Keila te chama" autocomplete="name">
+
+      <label for="fZap">WhatsApp</label>
+      <input type="tel" id="fZap" placeholder="(48) 99999-9999" autocomplete="tel" inputmode="numeric">
+
+      <label for="fNasc">Data de nascimento</label>
+      <input type="date" id="fNasc" autocomplete="bday">
+
+      <label>O que você quer fazer?</label>
+      <div class="opts" id="fOpts">
+        <button type="button" class="opt" data-v="piercing">Colocar um piercing</button>
+        <button type="button" class="opt" data-v="troca_joia">Trocar de joia</button>
+        <button type="button" class="opt" data-v="duvida">Tirar dúvida ou avaliar</button>
+        <button type="button" class="opt" data-v="outro">Outro</button>
+      </div>
+
+      <label for="fObs">Quer contar mais? (opcional)</label>
+      <textarea id="fObs" rows="2" placeholder="Ex.: helix na orelha direita"></textarea>
+
+      <p class="erro" id="fErro"></p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-rose" id="fBtn" onclick="reservar()" style="flex:1;min-width:200px">Reservar horário</button>
+        <button class="btn-ghost" onclick="voltarGrade()">Escolher outro</button>
+      </div>
     </div>
   </div>
 
-  <div id="recoveryView" class="hidden">
-    <div class="login-card">
-      <h2>Criar nova senha</h2>
-      <p class="hint">Defina a nova senha de acesso ao painel.</p>
-      <label>Nova senha</label>
-      <input type="password" id="newPwd" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
-      <label>Confirmar nova senha</label>
-      <input type="password" id="newPwd2" placeholder="Repita a senha" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSetNewPassword()">
-      <button class="btn-rose" id="setPwdBtn" onclick="doSetNewPassword()" style="width:100%;justify-content:center">Salvar nova senha</button>
-      <p class="hint" id="recoveryErr" style="color:#e8a08f;margin:14px 0 0;display:none"></p>
-    </div>
-  </div>
-
-  <div id="manageView" class="hidden">
-
-    <div class="tabs">
-      <button class="tab on" id="tabJoias" onclick="setTab('joias')">Joias</button>
-      <button class="tab" id="tabHorarios" onclick="setTab('horarios')">Horários</button>
-    </div>
-
-    <div id="paneHorarios" class="hidden">
-      <div class="manage-head">
-        <div>
-          <h2>Seus horários</h2>
-          <p>Toque no horário para abrir. Toque de novo para fechar. Só o que estiver aberto aparece para quem for agendar.</p>
-        </div>
-        <button class="btn-ghost" onclick="repetirSemana()">Repetir semana passada</button>
+  <!-- confirmação -->
+  <div id="viewOk" class="hidden">
+    <div class="ok">
+      <div class="ok-ico">
+        <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>
       </div>
-
-      <div class="card">
-        <div class="wk-nav">
-          <button class="wk-arrow" id="wkPrev" onclick="mudarSemana(-1)" title="Semana anterior">←</button>
-          <b id="wkLabel">—</b>
-          <button class="wk-arrow" onclick="mudarSemana(1)" title="Próxima semana">→</button>
-        </div>
-        <div class="wk-legend">
-          <span><i style="background:var(--open-soft);border:1px solid var(--open)"></i>Aberto</span>
-          <span><i style="background:var(--gold-2)"></i>Alguém marcou</span>
-          <span><i style="border:1px dashed var(--line)"></i>Fechado</span>
-        </div>
-        <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
-          <button class="day-all" onclick="expandirTudo()" id="btnTudo">abrir todos os dias</button>
-        </div>
-        <div id="grade"></div>
-      </div>
+      <h2>Horário reservado</h2>
+      <div class="quando" id="okQuando">—</div>
+      <p>A Keila vai confirmar com você pelo WhatsApp. Toque no botão para avisar que você reservou.</p>
+      <a class="btn-rose" id="okZap" href="#" target="_blank" rel="noopener">Avisar no WhatsApp</a>
+      <div style="margin-top:22px"><a href="/" class="btn-ghost">Voltar ao site</a></div>
     </div>
-
-    <div id="paneJoias">
-    <div class="manage-head">
-      <div>
-        <h2>Suas joias</h2>
-        <p>Tudo que você adicionar aqui aparece no catálogo do site na hora.</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Joias no catálogo</h3>
-      <div class="admin-list" id="adminList"></div>
-    </div>
-
-    <div class="card">
-      <h3 id="formTitle">Adicionar nova joia</h3>
-      <div class="uploader" id="uploader" onclick="document.getElementById('file').click()">
-        <div id="upText"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="margin:0 auto 8px"><path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Clique para enviar a foto da joia</div>
-      </div>
-      <input type="file" id="file" accept="image/*" style="display:none" onchange="previewFile(this)">
-      <label>Nome da joia</label>
-      <input type="text" id="fName" placeholder="Ex.: Argola cravejada">
-      <div class="row2">
-        <div><label>Categoria</label>
-          <input type="text" id="fCat" list="catOptions" placeholder="Ex.: Argolas" autocomplete="off">
-          <datalist id="catOptions"></datalist>
-        </div>
-        <div><label>Material</label>
-          <input type="text" id="fMat" placeholder="Titânio ASTM F-136">
-        </div>
-      </div>
-      <label>Onde vai o piercing (pode marcar vários)</label>
-      <div class="loc-box">
-        <div class="loc-sel" id="locSel"></div>
-        <div id="locGroups"></div>
-        <div class="loc-add">
-          <input type="text" id="locInput" list="locOptions" placeholder="Outro local não listado…" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addLocal();}">
-          <datalist id="locOptions"></datalist>
-          <button type="button" onclick="addLocal()">+ Adicionar</button>
-        </div>
-        <div class="loc-hint">Toque nos locais acima para marcar. Use o campo só se faltar algum — ele entra na lista.</div>
-      </div>
-
-      <label>Preço (R$)</label>
-      <input type="number" id="fPrice" placeholder="130">
-      <label>Descrição (opcional)</label>
-      <textarea id="fDesc" rows="3" placeholder="Ex.: Joia para nariz, argola em titânio com pedra cravejada. Indicada para narina."></textarea>
-      <div style="display:flex;gap:12px;margin-top:8px">
-        <button class="btn-rose" onclick="saveJoia()" id="saveBtn" style="flex:1;justify-content:center">Adicionar ao catálogo</button>
-        <button class="btn-ghost" onclick="resetForm()" id="cancelBtn" style="display:none">Cancelar</button>
-      </div>
-    </div>
-    </div>
-
   </div>
 
 </main>
-
-<div class="sheet hidden" id="sheet" onclick="if(event.target===this)fecharSheet()">
-  <div class="sheet-box">
-    <h3 id="shNome">—</h3>
-    <div class="when" id="shQuando">—</div>
-    <dl>
-      <dt>WhatsApp</dt><dd id="shZap">—</dd>
-      <dt>Nascimento</dt><dd id="shNasc">—</dd>
-      <dt>Quer</dt><dd id="shInt">—</dd>
-      <dt>Observação</dt><dd id="shObs">—</dd>
-    </dl>
-    <div style="display:flex;gap:10px">
-      <a class="btn-rose" id="shZapBtn" href="#" target="_blank" rel="noopener" style="flex:1;justify-content:center">Chamar no WhatsApp</a>
-      <button class="btn-ghost" onclick="fecharSheet()">Fechar</button>
-    </div>
-    <button class="btn-ghost" onclick="cancelarReserva()" style="width:100%;justify-content:center;margin-top:10px;border-color:#8a5a52;color:#e8a08f">Cancelar este agendamento</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SB_URL='https://ciwyxnyeusmjblvvanph.supabase.co';
   const SB_KEY='sb_publishable_bcxBHJT2vhPsh3fPoFticw_kUw40F19';
+  const ZAP='5548996560573';
   const sb=window.supabase.createClient(SB_URL,SB_KEY);
-  let joias=[], editingId=null, pendingFile=null;
-  const phIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
 
-  function toast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');setTimeout(()=>t.className='toast'+(err?' err':''),3200);}
-  function show(view){
-    document.getElementById('loginView').classList.toggle('hidden',view!=='login');
-    document.getElementById('recoveryView').classList.toggle('hidden',view!=='recovery');
-    document.getElementById('manageView').classList.toggle('hidden',view!=='manage');
-    document.getElementById('logoutBtn').classList.toggle('hidden',view!=='manage');
+  const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  let slots=[], escolhido=null, intencao=null;
+
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dataLocal=(d,h)=>new Date(`${d}T${h}`);
+
+  function rotulo(dataStr,hora){
+    const d=dataLocal(dataStr,hora);
+    return `${DIAS[d.getDay()]}, ${d.getDate()} de ${MESES[d.getMonth()]} às ${hora.slice(0,5)}`;
   }
-  async function doSetNewPassword(){
-    const p1=document.getElementById('newPwd').value;
-    const p2=document.getElementById('newPwd2').value;
-    const err=document.getElementById('recoveryErr');
-    err.style.display='none';
-    if(p1.length<6){err.textContent='A senha precisa ter pelo menos 6 caracteres.';err.style.display='block';return;}
-    if(p1!==p2){err.textContent='As senhas não coincidem.';err.style.display='block';return;}
-    const btn=document.getElementById('setPwdBtn');btn.textContent='Salvando…';
-    const {error}=await sb.auth.updateUser({password:p1});
-    btn.textContent='Salvar nova senha';
-    if(error){err.textContent='Não foi possível salvar: '+error.message;err.style.display='block';return;}
-    toast('Senha atualizada! Você já está logado.');
-    show('manage');await loadJoias();
+  function view(v){
+    for(const id of ['viewGrade','viewForm','viewOk'])
+      document.getElementById(id).classList.toggle('hidden',id!=='view'+v);
+    window.scrollTo({top:0});
   }
 
-  async function init(){
-    const hash=window.location.hash||'';
-    const isRecovery=hash.includes('type=recovery');
-    sb.auth.onAuthStateChange((event)=>{
-      if(event==='PASSWORD_RECOVERY'){show('recovery');}
-    });
-    if(isRecovery){
-      // aguarda a lib processar o token do hash antes de decidir a view
-      setTimeout(async ()=>{
-        const {data}=await sb.auth.getSession();
-        if(data.session)show('recovery');else show('login');
-      }, 400);
+  async function carregar(){
+    const limite=new Date(Date.now()+2*60*60*1000);   // antecedência mínima de 2h
+    const hoje=new Date();
+    const ate=new Date(); ate.setDate(ate.getDate()+60);
+    const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+    const {data,error}=await sb.from('horarios').select('id,data,hora')
+      .gte('data',fmt(hoje)).lte('data',fmt(ate))
+      .order('data').order('hora');
+
+    if(error){
+      document.getElementById('grade').innerHTML=
+        '<div class="vazio"><h3>Não consegui carregar</h3><p>Tenta de novo daqui a pouco, ou me chama no WhatsApp.</p>'+btnZap()+'</div>';
       return;
     }
-    const {data}=await sb.auth.getSession();
-    if(data.session){show('manage');await loadJoias();}else{show('login');}
+    slots=(data||[]).filter(s=>dataLocal(s.data,s.hora)>limite);
+    render();
   }
-  async function doLogin(){
-    const email=document.getElementById('email').value.trim();
-    const password=document.getElementById('pwd').value;
-    const btn=document.getElementById('loginBtn');btn.textContent='Entrando…';
-    const {error}=await sb.auth.signInWithPassword({email,password});
-    btn.textContent='Entrar';
-    if(error){const e=document.getElementById('loginErr');e.textContent='E-mail ou senha incorretos.';e.style.display='block';return;}
-    show('manage');await loadJoias();
-  }
-  async function doLogout(){await sb.auth.signOut();show('login');toast('Você saiu do painel.');}
 
-  /* ═══════════ HORÁRIOS ═══════════ */
-  const HORA_INI=8, HORA_FIM=20, PASSO=30, DIAS=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const horasPadrao=()=>{const r=[];for(let m=HORA_INI*60;m<=HORA_FIM*60;m+=PASSO)r.push(`${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}:00`);return r;};
-  const INTENCOES={piercing:'Colocar um piercing',troca_joia:'Trocar de joia',duvida:'Tirar dúvida / avaliar',outro:'Outro'};
-  let semanaOffset=0, slots=[], agendas={}, slotAberto=null, diasAbertos={};
-
-  const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-  function segundaDaSemana(off){
-    const h=new Date(); h.setHours(0,0,0,0);
-    const dow=h.getDay();                       // 0=dom
-    h.setDate(h.getDate()-(dow===0?6:dow-1));   // volta pra segunda
-    h.setDate(h.getDate()+off*7);
-    return h;
+  function btnZap(txt){
+    const t=txt||'Olá, Keila! Vim pelo site e queria agendar um horário.';
+    return `<a class="btn-rose" href="https://wa.me/${ZAP}?text=${encodeURIComponent(t)}" target="_blank" rel="noopener">Falar no WhatsApp</a>`;
   }
-  function diasDaSemana(off){
-    const s=segundaDaSemana(off);
-    return [0,1,2,3,4,5].map(i=>{const d=new Date(s);d.setDate(s.getDate()+i);return d;});
-  }
-  function setTab(t){
-    const h=t==='horarios';
-    document.getElementById('paneJoias').classList.toggle('hidden',h);
-    document.getElementById('paneHorarios').classList.toggle('hidden',!h);
-    document.getElementById('tabJoias').classList.toggle('on',!h);
-    document.getElementById('tabHorarios').classList.toggle('on',h);
-    if(h)loadHorarios();
-  }
-  function toggleDia(dia){
-    const hoje=iso(new Date())===dia;
-    const atual=diasAbertos[dia]!==undefined?diasAbertos[dia]:hoje;
-    diasAbertos[dia]=!atual;
-    const y=window.scrollY; renderGrade(); window.scrollTo({top:y});
-  }
-  function expandirTudo(){
-    const dias=diasDaSemana(semanaOffset).map(iso);
-    const algumFechado=dias.some(d=>{
-      const hoje=iso(new Date())===d;
-      return !(diasAbertos[d]!==undefined?diasAbertos[d]:hoje);
-    });
-    dias.forEach(d=>diasAbertos[d]=algumFechado);
-    document.getElementById('btnTudo').textContent=algumFechado?'recolher todos':'abrir todos os dias';
-    const y=window.scrollY; renderGrade(); window.scrollTo({top:y});
-  }
-  function mudarSemana(n){semanaOffset+=n;diasAbertos={};const b=document.getElementById('btnTudo');if(b)b.textContent='abrir todos os dias';loadHorarios();window.scrollTo({top:0,behavior:'smooth'});}
 
-  async function loadHorarios(quieto){
-    const scrollAntes=window.scrollY;
-    if(semanaOffset<0)semanaOffset=0;
-    document.getElementById('wkPrev').disabled=(semanaOffset===0);
-    const dias=diasDaSemana(semanaOffset);
-    const de=iso(dias[0]), ate=iso(dias[5]);
-    document.getElementById('wkLabel').textContent=
-      `${dias[0].getDate()}/${dias[0].getMonth()+1} — ${dias[5].getDate()}/${dias[5].getMonth()+1}`;
-    if(!quieto)document.getElementById('grade').innerHTML='<div class="list-empty">Carregando…</div>';
-
-    const {data,error}=await sb.from('horarios').select('*').gte('data',de).lte('data',ate);
-    if(error){toast('Não consegui carregar os horários.',true);return;}
-    slots=data||[];
-
-    agendas={};
-    const ids=slots.filter(s=>s.status==='reservado').map(s=>s.id);
-    if(ids.length){
-      const r=await sb.from('agendamentos').select('*').in('horario_id',ids);
-      (r.data||[]).forEach(a=>agendas[a.horario_id]=a);
+  function render(){
+    if(!slots.length){
+      document.getElementById('grade').innerHTML=
+        `<div class="vazio"><h3>Sem horários abertos no momento</h3>
+         <p>A agenda desta semana já fechou. Me chama no WhatsApp que a gente encontra um horário para você.</p>${btnZap()}</div>`;
+      return;
     }
-    renderGrade();
-    if(quieto)window.scrollTo({top:scrollAntes});   // toque num horário não pode jogar a página pro topo
-  }
+    const porDia={};
+    slots.forEach(s=>{(porDia[s.data]=porDia[s.data]||[]).push(s);});
 
-  function renderGrade(){
-    const agora=new Date();
-    document.getElementById('grade').innerHTML=diasDaSemana(semanaOffset).map((d,i)=>{
-      const dia=iso(d);
-      const doDia=slots.filter(s=>s.data===dia);
-      const abertos=doDia.filter(s=>s.status==='livre').length;
-      const marcados=doDia.filter(s=>s.status==='reservado').length;
-
-      // grade padrão + qualquer horário que exista no banco (inclusive fora de 7h-18h)
-      const horas=[...new Set([...horasPadrao(),...doDia.map(s=>s.hora)])].sort();
-
-      let botoes=horas.map(hora=>btnSlot(dia,hora,doDia,agora)).join('');
-      const diaPassou=new Date(`${dia}T23:59`)<agora;
-      if(!diaPassou)botoes+=`<button class="slot add" onclick="horarioCustom('${dia}')" title="Outro horário">+</button>`;
-
-      let resumo=[];
-      if(marcados)resumo.push(`<b>${marcados} marcado${marcados>1?'s':''}</b>`);
-      if(abertos)resumo.push(`${abertos} aberto${abertos>1?'s':''}`);
-      resumo=resumo.length?resumo.join(' · '):'fechado';
-
-      const hoje=iso(new Date())===dia;
-      const exp=diasAbertos[dia]!==undefined?diasAbertos[dia]:hoje;   // hoje já vem aberto
-      const acao=(diaPassou||!exp)?'':`<button class="day-all" onclick="event.stopPropagation();abrirDia('${dia}',${abertos===0})">${abertos?'fechar tudo':'abrir o dia'}</button>`;
-
-      return `<div class="day">
-        <div class="day-head" onclick="toggleDia('${dia}')">
-          <span class="caret${exp?' on':''}">›</span>
-          <h4>${DIAS[i]}</h4><small>${d.getDate()}/${d.getMonth()+1}${hoje?' · hoje':''}</small>
-          ${acao}<span class="cnt">${resumo}</span>
-        </div>
-        <div class="slots"${exp?'':' hidden'}>${botoes}</div>
+    document.getElementById('grade').innerHTML=Object.keys(porDia).sort().map(dia=>{
+      const d=dataLocal(dia,'12:00:00');
+      const botoes=porDia[dia].map(s=>
+        `<button class="hora" onclick="escolher('${s.id}')">${s.hora.slice(0,5)}</button>`).join('');
+      return `<div class="dia">
+        <h3>${DIAS[d.getDay()]} <small>${d.getDate()} de ${MESES[d.getMonth()]}</small></h3>
+        <div class="horas">${botoes}</div>
       </div>`;
     }).join('');
   }
 
-  function btnSlot(dia,hora,doDia,agora){
-    const s=doDia.find(x=>x.hora===hora);
-    const hhmm=hora.slice(0,5);
-    const passado=new Date(`${dia}T${hora}`)<agora;
-    if(s&&s.status==='reservado'){
-      const a=agendas[s.id];
-      return `<button class="slot reservado" onclick="verReserva('${s.id}')">${hhmm}<span>${esc(a?a.nome.split(' ')[0]:'reservado')}</span></button>`;
-    }
-    if(s&&s.status==='fechado'){
-      return `<button class="slot auto" onclick="toggleSlot('${dia}','${hora}')">${hhmm}<span>folga</span></button>`;
-    }
-    const cls='slot'+(s?' livre':'')+(passado&&!s?' passado':'')+(ehPadrao(hora)?'':' extra');
-    const act=passado&&!s?'':`onclick="toggleSlot('${dia}','${hora}')"`;
-    return `<button class="${cls}" ${act}>${hhmm}</button>`;
+  function escolher(id){
+    escolhido=slots.find(s=>s.id===id);
+    if(!escolhido)return;
+    document.getElementById('fQuando').textContent=rotulo(escolhido.data,escolhido.hora);
+    view('Form');
+  }
+  function voltarGrade(){escolhido=null;view('Grade');}
+
+  document.getElementById('fOpts').addEventListener('click',e=>{
+    const b=e.target.closest('.opt'); if(!b)return;
+    intencao=b.dataset.v;
+    document.querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o===b));
+  });
+
+  document.getElementById('fZap').addEventListener('input',e=>{
+    let d=e.target.value.replace(/\D/g,'').slice(0,11);
+    e.target.value = d.length<=2 ? d
+      : d.length<=6 ? `(${d.slice(0,2)}) ${d.slice(2)}`
+      : d.length<=10 ? `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`
+      : `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  });
+
+  function falha(msg){
+    const e=document.getElementById('fErro');
+    e.textContent=msg; e.style.display='block';
+    document.getElementById('fBtn').disabled=false;
+    document.getElementById('fBtn').textContent='Reservar horário';
   }
 
-  const ehPadrao=hora=>{
-    const [hh,mm]=hora.split(':').map(Number);
-    return (mm===0||mm===30) && hh>=HORA_INI && hh<=HORA_FIM && (hh*60+mm)<=HORA_FIM*60;
-  };
+  async function reservar(){
+    const nome=document.getElementById('fNome').value.trim();
+    const zap=document.getElementById('fZap').value.replace(/\D/g,'');
+    const nasc=document.getElementById('fNasc').value;
+    const obs=document.getElementById('fObs').value.trim();
+    document.getElementById('fErro').style.display='none';
 
-  async function toggleSlot(dia,hora){
-    const s=slots.find(x=>x.data===dia&&x.hora===hora);
-    if(s){
-      if(s.status==='reservado')return;
-      if(s.status==='fechado'){   // folga automática → um toque reabre
-        const {error}=await sb.from('horarios').update({status:'livre',fechado_auto:false}).eq('id',s.id);
-        if(error){toast('Não consegui reabrir esse horário.',true);return;}
-        await loadHorarios(true);return;
-      }
-      // horário fora da grade some da tela ao fechar — confirma antes
-      if(!ehPadrao(hora) && !confirm(`Apagar o horário das ${hora.slice(0,5)}?\n\nEle sai da grade. Para ter de novo, use o "+".`))return;
-      const {error}=await sb.from('horarios').delete().eq('id',s.id);
-      if(error){toast('Não consegui fechar esse horário.',true);return;}
-      if(!ehPadrao(hora))toast(`Horário das ${hora.slice(0,5)} apagado.`);
-    }else{
-      const {error}=await sb.from('horarios').insert({data:dia,hora,status:'livre'});
-      if(error){toast('Não consegui abrir esse horário.',true);return;}
-    }
-    await loadHorarios(true);
-  }
+    if(nome.length<2)return falha('Escreva seu nome.');
+    if(zap.length<10||zap.length>11)return falha('Confira o número do WhatsApp, com DDD.');
+    if(!nasc)return falha('Preencha sua data de nascimento.');
+    if(new Date(nasc+'T12:00')>new Date())return falha('Essa data de nascimento não está certa.');
+    if(!intencao)return falha('Escolha o que você quer fazer.');
 
-  async function abrirDia(dia,abrir){
-    const agora=new Date();
-    if(abrir){
-      const novos=[];
-      for(const hora of horasPadrao()){
-        if(new Date(`${dia}T${hora}`)<agora)continue;              // não abre horário que já passou
-        if(slots.some(s=>s.data===dia&&s.hora===hora))continue;
-        novos.push({data:dia,hora,status:'livre'});
-      }
-      if(!novos.length){toast('Não há horário novo para abrir nesse dia.');return;}
-      const {error}=await sb.from('horarios').insert(novos);
-      if(error){toast('Não consegui abrir o dia.',true);return;}
-      toast(`${novos.length} horários abertos.`);
-    }else{
-      const ids=slots.filter(s=>s.data===dia&&s.status==='livre').map(s=>s.id);
-      if(!ids.length){toast('Esse dia já está fechado.');return;}
-      const marcou=slots.some(s=>s.data===dia&&s.status==='reservado');
-      if(!confirm(`Fechar ${ids.length} horário(s) desse dia?`+(marcou?' Quem já marcou continua marcado.':'')))return;
-      const {error}=await sb.from('horarios').delete().in('id',ids);
-      if(error){toast('Não consegui fechar o dia.',true);return;}
-      toast('Dia fechado.');
-    }
-    await loadHorarios(true);
-  }
+    const btn=document.getElementById('fBtn');
+    btn.disabled=true; btn.textContent='Reservando…';
 
-  async function horarioCustom(dia){
-    const v=prompt('Que horário você quer abrir? Escreva assim: 7:30');
-    if(!v)return;
-    const m=v.trim().match(/^(\d{1,2})[:h.]?(\d{2})?$/);
-    if(!m){toast('Escreva no formato 7:30.',true);return;}
-    const h=Number(m[1]), mi=Number(m[2]||0);
-    if(h>23||mi>59){toast('Esse horário não existe.',true);return;}
-    const hora=`${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}:00`;
-    if(slots.some(x=>x.data===dia&&x.hora===hora)){toast('Esse horário já está na grade.');return;}
-    const {error}=await sb.from('horarios').insert({data:dia,hora,status:'livre'});
-    if(error){toast('Não consegui abrir esse horário.',true);return;}
-    await loadHorarios(true);
-  }
-
-  async function repetirSemana(){
-    const ant=diasDaSemana(semanaOffset-1), atual=diasDaSemana(semanaOffset);
-    const {data,error}=await sb.from('horarios').select('data,hora,status')
-      .gte('data',iso(ant[0])).lte('data',iso(ant[5]));
-    if(error){toast('Não consegui ler a semana passada.',true);return;}
-    const base=(data||[]).filter(s=>s.status!=='fechado');
-    if(!base.length){toast('A semana passada não tinha horário aberto.');return;}
-    const novos=[];
-    base.forEach(s=>{
-      const i=ant.findIndex(d=>iso(d)===s.data);
-      if(i<0)return;
-      const dia=iso(atual[i]);
-      if(slots.some(x=>x.data===dia&&x.hora===s.hora))return;
-      novos.push({data:dia,hora:s.hora,status:'livre'});
+    const {data,error}=await sb.rpc('reservar_horario',{
+      p_horario_id:escolhido.id, p_nome:nome, p_whatsapp:zap,
+      p_nascimento:nasc, p_intencao:intencao, p_observacao:obs||null
     });
-    if(!novos.length){toast('Esses horários já estão abertos nesta semana.');return;}
-    const {error:e2}=await sb.from('horarios').insert(novos);
-    if(e2){toast('Não consegui copiar os horários.',true);return;}
-    toast(`${novos.length} horário${novos.length>1?'s':''} aberto${novos.length>1?'s':''}.`);
-    await loadHorarios(true);
-  }
 
-  function verReserva(id){
-    const s=slots.find(x=>x.id===id), a=agendas[id];
-    if(!a){toast('Não achei os dados dessa reserva.',true);return;}
-    slotAberto=id;
-    const d=new Date(`${s.data}T${s.hora}`);
-    document.getElementById('shNome').textContent=a.nome;
-    document.getElementById('shQuando').textContent=
-      d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})+' · '+s.hora.slice(0,5);
-    document.getElementById('shZap').textContent=a.whatsapp;
-    const idade=Math.floor((Date.now()-new Date(a.nascimento))/31557600000);
-    document.getElementById('shNasc').textContent=
-      new Date(a.nascimento+'T12:00').toLocaleDateString('pt-BR')+` (${idade} anos)`+(idade<18?' ⚠ menor':'');
-    document.getElementById('shInt').textContent=INTENCOES[a.intencao]||a.intencao;
-    document.getElementById('shObs').textContent=a.observacao||'—';
-    document.getElementById('shZapBtn').href=
-      'https://wa.me/'+zapE164(a.whatsapp)+
-      '?text='+encodeURIComponent(`Oi ${a.nome.split(' ')[0]}! Aqui é a Keila. Confirmando seu horário: ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${s.hora.slice(0,5)}.`);
-    document.getElementById('sheet').classList.remove('hidden');
-  }
-  function zapE164(n){                          // mesma regra do zap_norm() no banco
-    const d=String(n||'').replace(/\D/g,'');
-    const nac=(d.length>=12&&d.length<=13&&d.startsWith('55'))?d.slice(2):d;
-    return '55'+nac;
-  }
-  function fecharSheet(){document.getElementById('sheet').classList.add('hidden');slotAberto=null;}
-
-  async function cancelarReserva(){
-    if(!slotAberto)return;
-    if(!confirm('Cancelar este agendamento? O horário volta a ficar aberto. Avise a cliente pelo WhatsApp — o sistema não avisa sozinho.'))return;
-    const id=slotAberto;
-    await sb.from('agendamentos').delete().eq('horario_id',id);
-    const {error}=await sb.from('horarios').update({status:'livre'}).eq('id',id);
-    if(error){toast('Não consegui cancelar.',true);return;}
-    const s=slots.find(x=>x.id===id);
-    if(s){                                     // reabre a folga que o sistema tinha fechado
-      const folga=slots.filter(x=>x.data===s.data&&x.hora>s.hora&&x.status==='fechado'&&x.fechado_auto)
-                       .sort((a,b)=>a.hora.localeCompare(b.hora))[0];
-      if(folga)await sb.from('horarios').update({status:'livre',fechado_auto:false}).eq('id',folga.id);
+    if(error){
+      const m=error.message||'';
+      if(m.includes('horario_indisponivel'))     return falha('Alguém acabou de reservar esse horário. Escolha outro.');
+      if(m.includes('antecedencia_minima'))      return falha('Esse horário está muito próximo. Escolha um mais adiante.');
+      if(m.includes('limite_agendamentos'))      return falha('Você já tem horários reservados. Me chama no WhatsApp para marcar mais.');
+      if(m.includes('whatsapp_invalido'))        return falha('Confira o número do WhatsApp, com DDD.');
+      if(m.includes('nascimento_invalido'))      return falha('Essa data de nascimento não está certa.');
+      return falha('Não consegui reservar agora. Tenta de novo ou me chama no WhatsApp.');
     }
-    fecharSheet();toast('Agendamento cancelado. O horário está aberto de novo.');
-    await loadHorarios(true);
+
+    const quando=rotulo(escolhido.data,escolhido.hora);
+    const idade=Math.floor((Date.now()-new Date(nasc+'T12:00'))/31557600000);
+    document.getElementById('okQuando').textContent=quando;
+
+    let msg=`Oi, Keila! Acabei de reservar um horário pelo site: ${quando}. Meu nome é ${nome}.`;
+    if(idade<18)msg+=' Tenho menos de 18 anos, vou com meu responsável.';
+    if(obs)msg+=` ${obs}`;
+    document.getElementById('okZap').href=`https://wa.me/${ZAP}?text=${encodeURIComponent(msg)}`;
+
+    view('Ok');
   }
 
-  async function loadJoias(){
-    const {data,error}=await sb.from('joias').select('*').order('criado_em',{ascending:false});
-    if(error){toast('Erro ao carregar joias.',true);return;}
-    joias=data||[];renderCatOptions();renderLocOptions();renderLocChips();renderList();
-  }
-  const CATS_PADRAO=['Argolas','Pontos / Labrets','Correntes','Microdermais','Ornamentadas'];
-  function renderCatOptions(){
-    const usadas=joias.map(j=>j.categoria).filter(Boolean);
-    const todas=[...new Set([...usadas,...CATS_PADRAO])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-    document.getElementById('catOptions').innerHTML=todas.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">`).join('');
-  }
-  function renderList(){
-    document.getElementById('adminList').innerHTML=joias.length?joias.map(j=>`
-      <div class="admin-row">
-        <div class="thumb">${j.foto_url?`<img src="${j.foto_url}" alt="${esc(j.nome)}">`:phIcon}</div>
-        <div class="info"><b>${j.nome}</b><small>${j.categoria||''}${(j.locais&&j.locais.length)?' · '+j.locais.join(', '):''} · R$ ${j.preco}</small></div>
-        <div class="acts">
-          <button class="icon-btn" onclick="editJoia('${j.id}')" title="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-          <button class="icon-btn del" onclick="delJoia('${j.id}')" title="Remover"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
-        </div>
-      </div>`).join(''):'<div class="list-empty">Nenhuma joia ainda. Adicione a primeira abaixo.</div>';
-  }
-
-  function previewFile(input){const f=input.files[0];if(!f)return;pendingFile=f;const url=URL.createObjectURL(f);document.getElementById('upText').innerHTML=`<img src="${url}" alt="Foto escolhida para a joia"><div>Foto carregada — clique para trocar</div>`;}
-
-  let locaisAtuais=[];
-  const LOCAIS_CATALOGO=[
-    ['Orelha',['Lóbulo','Hélix','Forward hélix','Anti-hélix','Flat','Tragus','Anti-tragus','Daith','Rook','Conch','Snug','Industrial']],
-    ['Nariz',['Nostril','Septo','Bridge','High nostril']],
-    ['Boca e lábios',['Labret','Vertical labret','Medusa','Monroe','Madonna','Ashley','Smiley','Língua']],
-    ['Rosto',['Sobrancelha','Bochecha','Maçã do rosto']],
-    ['Corpo',['Umbigo','Mamilo','Nuca','Microdermal']]
-  ];
-  function catalogoTodos(){return LOCAIS_CATALOGO.flatMap(g=>g[1]);}
-  function renderLocChips(){
-    const sel=document.getElementById('locSel');
-    sel.innerHTML=locaisAtuais.length
-      ? 'Marcados: <b>'+locaisAtuais.join(', ')+'</b>'
-      : '<span style="color:var(--muted-2)">Nenhum local marcado ainda.</span>';
-    // locais personalizados (fora do catálogo)
-    const extras=[...new Set([...locaisAtuais,...joias.flatMap(j=>j.locais||[])])]
-      .filter(l=>!catalogoTodos().some(c=>c.toLowerCase()===l.toLowerCase()));
-    const grupos=[...LOCAIS_CATALOGO];
-    if(extras.length)grupos.push(['Outros',extras]);
-    document.getElementById('locGroups').innerHTML=grupos.map(([lab,opts])=>
-      `<div class="loc-group"><div class="loc-group-lab">${lab}</div><div class="loc-opts">`+
-      opts.map(o=>`<button type="button" class="loc-opt ${locaisAtuais.some(l=>l.toLowerCase()===o.toLowerCase())?'on':''}" onclick="toggleLocal('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')+
-      '</div></div>').join('');
-  }
-  window.toggleLocal=function(v){
-    const i=locaisAtuais.findIndex(l=>l.toLowerCase()===v.toLowerCase());
-    if(i>=0)locaisAtuais.splice(i,1);else locaisAtuais.push(v);
-    renderLocChips();
-  };
-  function renderLocOptions(){
-    const todos=[...new Set([...catalogoTodos(),...joias.flatMap(j=>j.locais||[])])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-    document.getElementById('locOptions').innerHTML=todos.map(l=>`<option value="${l.replace(/"/g,'&quot;')}">`).join('');
-  }
-  window.addLocal=function(){
-    const inp=document.getElementById('locInput');
-    let v=(inp.value||'').trim().replace(/\s+/g,' ');
-    if(!v)return;
-    const existentes=[...new Set([...catalogoTodos(),...joias.flatMap(j=>j.locais||[])])];
-    const match=existentes.find(c=>c.toLowerCase()===v.toLowerCase());
-    v=match||v;
-    if(!locaisAtuais.some(l=>l.toLowerCase()===v.toLowerCase()))locaisAtuais.push(v);
-    inp.value='';renderLocChips();
-  };
-
-  function normalizarCategoria(v){
-    const t=(v||'').trim().replace(/\s+/g,' ');
-    if(!t)return '';
-    const existentes=[...new Set([...joias.map(j=>j.categoria).filter(Boolean),...CATS_PADRAO])];
-    const match=existentes.find(c=>c.toLowerCase()===t.toLowerCase());
-    return match||t;
-  }
-  async function saveJoia(){
-    if((document.getElementById('locInput').value||'').trim())addLocal();
-    const nome=document.getElementById('fName').value.trim();
-    const preco=document.getElementById('fPrice').value;
-    if(!nome||!preco){toast('Preencha pelo menos o nome e o preço.',true);return;}
-    const btn=document.getElementById('saveBtn');btn.textContent='Salvando…';
-    try{
-      let foto_url=null;
-      const cur=editingId?joias.find(x=>x.id===editingId):null;
-      if(cur)foto_url=cur.foto_url;
-      if(pendingFile){
-        const ext=(pendingFile.name.split('.').pop()||'jpg').toLowerCase();
-        const path=Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
-        const up=await sb.storage.from('joias').upload(path,pendingFile);
-        if(up.error)throw up.error;
-        foto_url=sb.storage.from('joias').getPublicUrl(path).data.publicUrl;
-      }
-      const payload={nome,categoria:normalizarCategoria(document.getElementById('fCat').value),material:document.getElementById('fMat').value.trim()||'Titânio ASTM F-136',preco:Number(preco),descricao:document.getElementById('fDesc').value.trim()||null,locais:locaisAtuais,foto_url};
-      let res;
-      if(editingId)res=await sb.from('joias').update(payload).eq('id',editingId);
-      else res=await sb.from('joias').insert(payload);
-      if(res.error)throw res.error;
-      resetForm();await loadJoias();toast(editingId?'Joia atualizada!':'Joia adicionada!');
-    }catch(e){toast('Erro ao salvar: '+(e.message||'tente novamente'),true);}
-    btn.textContent=editingId?'Salvar alterações':'Adicionar ao catálogo';
-  }
-
-  function editJoia(id){
-    const j=joias.find(x=>x.id===id);editingId=id;pendingFile=null;
-    document.getElementById('fName').value=j.nome;
-    document.getElementById('fCat').value=j.categoria||'';
-    document.getElementById('fMat').value=j.material||'';
-    document.getElementById('fPrice').value=j.preco;
-    document.getElementById('fDesc').value=j.descricao||'';
-    locaisAtuais=[...(j.locais||[])];renderLocChips();
-    document.getElementById('upText').innerHTML=j.foto_url?`<img src="${j.foto_url}" alt="${esc(j.nome)}"><div>Foto atual — clique para trocar</div>`:'Clique para enviar a foto da joia';
-    document.getElementById('formTitle').textContent='Editar joia';
-    document.getElementById('saveBtn').textContent='Salvar alterações';
-    document.getElementById('cancelBtn').style.display='inline-flex';
-    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-  }
-  async function delJoia(id){
-    if(!confirm('Remover esta joia do catálogo?'))return;
-    const {error}=await sb.from('joias').delete().eq('id',id);
-    if(error){toast('Erro ao remover.',true);return;}
-    if(editingId===id)resetForm();await loadJoias();toast('Joia removida.');
-  }
-  function resetForm(){
-    editingId=null;pendingFile=null;
-    ['fName','fMat','fPrice','fDesc','locInput'].forEach(i=>document.getElementById(i).value='');
-    locaisAtuais=[];renderLocChips();
-    document.getElementById('fCat').value='';
-    document.getElementById('upText').innerHTML='<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="margin:0 auto 8px"><path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Clique para enviar a foto da joia';
-    document.getElementById('formTitle').textContent='Adicionar nova joia';
-    document.getElementById('saveBtn').textContent='Adicionar ao catálogo';
-    document.getElementById('cancelBtn').style.display='none';
-  }
-
-  init();
+  carregar();
 </script>
 </body>
 </html>
