@@ -186,7 +186,10 @@
   const SB_URL='https://ciwyxnyeusmjblvvanph.supabase.co';
   const SB_KEY='sb_publishable_bcxBHJT2vhPsh3fPoFticw_kUw40F19';
   const ZAP='5548996560573';
-  const sb=window.supabase.createClient(SB_URL,SB_KEY);
+  // sempre anônimo: não herda a sessão do painel guardada neste navegador
+  const sb=window.supabase.createClient(SB_URL,SB_KEY,{
+    auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}
+  });
 
   const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
   const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
@@ -212,6 +215,7 @@
     const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
     const {data,error}=await sb.from('horarios').select('id,data,hora')
+      .eq('status','livre')
       .gte('data',fmt(hoje)).lte('data',fmt(ate))
       .order('data').order('hora');
 
@@ -321,6 +325,10 @@
 
     view('Ok');
   }
+
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden && !document.getElementById('viewGrade').classList.contains('hidden'))carregar();
+  });
 
   carregar();
 </script>
