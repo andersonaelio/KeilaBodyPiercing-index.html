@@ -14,6 +14,7 @@
     --bg:#06181a;--bg-2:#0a2426;--card:#0f3338;--card-2:#0a2629;
     --line:#2b5a5f;--line-soft:#1c474b;--cream:#f1ece6;--cream-dim:#e6ddd2;
     --muted:#9ab4b6;--muted-2:#6e8d8f;
+    --open:#5aa9a4;--open-soft:rgba(90,169,164,.14);
     --gold-1:#f3ddb4;--gold-2:#e7c891;--gold-3:#d6b06a;--copper:#c9a86a;
     --serif:'Playfair Display',Georgia,serif;--sans:'Jost',system-ui,sans-serif;
   }
@@ -120,7 +121,7 @@
   .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
   .slot{min-height:48px;border:1px solid var(--line-soft);background:transparent;color:var(--muted-2);border-radius:11px;padding:9px 5px;font-family:var(--sans);font-size:.92rem;cursor:pointer;transition:border-color .18s,color .18s;text-align:center;line-height:1.25}
   .slot:hover{border-color:var(--copper);color:var(--cream-dim)}
-  .slot.livre{border-color:var(--gold-2);background:rgba(231,200,145,.1);color:var(--gold-1)}
+  .slot.livre{border-color:var(--open);background:var(--open-soft);color:#8fd3ce}
   .slot.reservado{background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 46%,var(--gold-3));border-color:transparent;color:#3a2c10;font-weight:500}
   .slot.reservado span{display:block;font-size:.66rem;font-weight:400;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .slot.auto{border-style:dashed;border-color:var(--line);color:var(--muted-2)}
@@ -212,7 +213,7 @@
           <button class="wk-arrow" onclick="mudarSemana(1)" title="Próxima semana">→</button>
         </div>
         <div class="wk-legend">
-          <span><i style="background:rgba(231,200,145,.35);border:1px solid var(--gold-2)"></i>Aberto</span>
+          <span><i style="background:var(--open-soft);border:1px solid var(--open)"></i>Aberto</span>
           <span><i style="background:var(--gold-2)"></i>Alguém marcou</span>
           <span><i style="border:1px dashed var(--line)"></i>Fechado</span>
         </div>
