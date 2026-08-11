@@ -114,7 +114,9 @@
   .day-head{display:flex;align-items:baseline;gap:10px;margin-bottom:13px}
   .day-head h4{font-family:var(--serif);font-weight:500;font-size:1.12rem}
   .day-head small{color:var(--muted-2);font-size:.78rem}
-  .day-head .cnt{margin-left:auto;font-size:.74rem;color:var(--muted-2)}
+  .day-all{margin-left:auto;background:none;border:none;color:var(--muted-2);font-family:var(--sans);font-size:.74rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 4px}
+  .day-all:hover{color:var(--gold-2)}
+  .day-head .cnt{margin-left:14px;font-size:.74rem;color:var(--muted-2)}
   .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
   .slot{min-height:48px;border:1px solid var(--line-soft);background:transparent;color:var(--muted-2);border-radius:11px;padding:9px 5px;font-family:var(--sans);font-size:.92rem;cursor:pointer;transition:border-color .18s,color .18s;text-align:center;line-height:1.25}
   .slot:hover{border-color:var(--copper);color:var(--cream-dim)}
@@ -379,16 +381,17 @@
     document.getElementById('tabHorarios').classList.toggle('on',h);
     if(h)loadHorarios();
   }
-  function mudarSemana(n){semanaOffset+=n;loadHorarios();}
+  function mudarSemana(n){semanaOffset+=n;loadHorarios();window.scrollTo({top:0,behavior:'smooth'});}
 
-  async function loadHorarios(){
+  async function loadHorarios(quieto){
+    const scrollAntes=window.scrollY;
     if(semanaOffset<0)semanaOffset=0;
     document.getElementById('wkPrev').disabled=(semanaOffset===0);
     const dias=diasDaSemana(semanaOffset);
     const de=iso(dias[0]), ate=iso(dias[4]);
     document.getElementById('wkLabel').textContent=
       `${dias[0].getDate()}/${dias[0].getMonth()+1} — ${dias[4].getDate()}/${dias[4].getMonth()+1}`;
-    document.getElementById('grade').innerHTML='<div class="list-empty">Carregando…</div>';
+    if(!quieto)document.getElementById('grade').innerHTML='<div class="list-empty">Carregando…</div>';
 
     const {data,error}=await sb.from('horarios').select('*').gte('data',de).lte('data',ate);
     if(error){toast('Não consegui carregar os horários.',true);return;}
@@ -401,6 +404,7 @@
       (r.data||[]).forEach(a=>agendas[a.horario_id]=a);
     }
     renderGrade();
+    if(quieto)window.scrollTo({top:scrollAntes});   // toque num horário não pode jogar a página pro topo
   }
 
   function renderGrade(){
@@ -417,16 +421,20 @@
       const horas=[...new Set([...padrao,...doDia.map(s=>s.hora)])].sort();
 
       let botoes=horas.map(hora=>btnSlot(dia,hora,doDia,agora)).join('');
-      botoes+=`<button class="slot add" onclick="horarioCustom('${dia}')" title="Outro horário">+</button>`;
+      const diaPassou=new Date(`${dia}T23:59`)<agora;
+      if(!diaPassou)botoes+=`<button class="slot add" onclick="horarioCustom('${dia}')" title="Outro horário">+</button>`;
 
       let resumo='—';
       if(marcados)resumo=`${marcados} marcado${marcados>1?'s':''}`;
       else if(abertos)resumo=`${abertos} aberto${abertos>1?'s':''}`;
 
+      const hoje=iso(new Date())===dia;
+      const acao=diaPassou?'':`<button class="day-all" onclick="abrirDia('${dia}',${abertos===0})">${abertos?'fechar tudo':'abrir o dia'}</button>`;
+
       return `<div class="day">
         <div class="day-head">
-          <h4>${DIAS[i]}</h4><small>${d.getDate()}/${d.getMonth()+1}</small>
-          <span class="cnt">${resumo}</span>
+          <h4>${DIAS[i]}</h4><small>${d.getDate()}/${d.getMonth()+1}${hoje?' · hoje':''}</small>
+          ${acao}<span class="cnt">${resumo}</span>
         </div>
         <div class="slots">${botoes}</div>
       </div>`;
@@ -456,7 +464,7 @@
       if(s.status==='fechado'){   // folga automática → um toque reabre
         const {error}=await sb.from('horarios').update({status:'livre',fechado_auto:false}).eq('id',s.id);
         if(error){toast('Não consegui reabrir esse horário.',true);return;}
-        await loadHorarios();return;
+        await loadHorarios(true);return;
       }
       const {error}=await sb.from('horarios').delete().eq('id',s.id);
       if(error){toast('Não consegui fechar esse horário.',true);return;}
@@ -464,7 +472,33 @@
       const {error}=await sb.from('horarios').insert({data:dia,hora,status:'livre'});
       if(error){toast('Não consegui abrir esse horário.',true);return;}
     }
-    await loadHorarios();
+    await loadHorarios(true);
+  }
+
+  async function abrirDia(dia,abrir){
+    const agora=new Date();
+    if(abrir){
+      const novos=[];
+      for(let x=HORA_INI;x<=HORA_FIM;x++){
+        const hora=`${String(x).padStart(2,'0')}:00:00`;
+        if(new Date(`${dia}T${hora}`)<agora)continue;              // não abre horário que já passou
+        if(slots.some(s=>s.data===dia&&s.hora===hora))continue;
+        novos.push({data:dia,hora,status:'livre'});
+      }
+      if(!novos.length){toast('Não há horário novo para abrir nesse dia.');return;}
+      const {error}=await sb.from('horarios').insert(novos);
+      if(error){toast('Não consegui abrir o dia.',true);return;}
+      toast(`${novos.length} horários abertos.`);
+    }else{
+      const ids=slots.filter(s=>s.data===dia&&s.status==='livre').map(s=>s.id);
+      if(!ids.length){toast('Esse dia já está fechado.');return;}
+      const marcou=slots.some(s=>s.data===dia&&s.status==='reservado');
+      if(!confirm(`Fechar ${ids.length} horário(s) desse dia?`+(marcou?' Quem já marcou continua marcado.':'')))return;
+      const {error}=await sb.from('horarios').delete().in('id',ids);
+      if(error){toast('Não consegui fechar o dia.',true);return;}
+      toast('Dia fechado.');
+    }
+    await loadHorarios(true);
   }
 
   async function horarioCustom(dia){
@@ -478,7 +512,7 @@
     if(slots.some(x=>x.data===dia&&x.hora===hora)){toast('Esse horário já está na grade.');return;}
     const {error}=await sb.from('horarios').insert({data:dia,hora,status:'livre'});
     if(error){toast('Não consegui abrir esse horário.',true);return;}
-    await loadHorarios();
+    await loadHorarios(true);
   }
 
   async function repetirSemana(){
@@ -500,7 +534,7 @@
     const {error:e2}=await sb.from('horarios').insert(novos);
     if(e2){toast('Não consegui copiar os horários.',true);return;}
     toast(`${novos.length} horário${novos.length>1?'s':''} aberto${novos.length>1?'s':''}.`);
-    await loadHorarios();
+    await loadHorarios(true);
   }
 
   function verReserva(id){
@@ -543,7 +577,7 @@
       if(folga)await sb.from('horarios').update({status:'livre',fechado_auto:false}).eq('id',folga.id);
     }
     fecharSheet();toast('Agendamento cancelado. O horário está aberto de novo.');
-    await loadHorarios();
+    await loadHorarios(true);
   }
 
   async function loadJoias(){
