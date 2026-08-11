@@ -137,7 +137,7 @@
       <div class="quando" id="fQuando">—</div>
 
       <label for="fNome">Seu nome</label>
-      <input type="text" id="fNome" placeholder="Nome e sobrenome" autocomplete="name">
+      <input type="text" id="fNome" placeholder="Como a Keila te chama" autocomplete="name">
 
       <label for="fZap">WhatsApp</label>
       <input type="tel" id="fZap" placeholder="(48) 99999-9999" autocomplete="tel" inputmode="numeric">
@@ -286,7 +286,7 @@
     const obs=document.getElementById('fObs').value.trim();
     document.getElementById('fErro').style.display='none';
 
-    if(nome.length<2||!nome.includes(' '))return falha('Escreva seu nome e sobrenome.');
+    if(nome.length<2)return falha('Escreva seu nome.');
     if(zap.length<10||zap.length>11)return falha('Confira o número do WhatsApp, com DDD.');
     if(!nasc)return falha('Preencha sua data de nascimento.');
     if(new Date(nasc+'T12:00')>new Date())return falha('Essa data de nascimento não está certa.');
