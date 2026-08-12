@@ -730,11 +730,11 @@
   const sb=window.supabase.createClient(SB_URL,SB_KEY);
   let _joias=[], _cat='Todas', _loc='Todos', _reg='Todos';
   const REGIOES=[
-    ['Orelha',['Lóbulo','Hélix','Forward hélix','Anti-hélix','Flat','Tragus','Anti-tragus','Daith','Rook','Conch','Snug','Industrial']],
-    ['Nariz',['Nostril','Septo','Bridge','High nostril']],
-    ['Boca e lábios',['Labret','Vertical labret','Medusa','Monroe','Madonna','Ashley','Smiley','Língua']],
-    ['Rosto',['Sobrancelha','Bochecha','Maçã do rosto']],
-    ['Corpo',['Umbigo','Mamilo','Nuca','Microdermal']]
+    ['Orelha',['Lóbulo','Hélix','Forward hélix','Anti-hélix','Flat','Tragus','Anti-tragus','Daith','Rook','Conch','Conch rim','Snug','Industrial','Orbital','Transversal do lóbulo']],
+    ['Nariz',['Nostril','Septo','Bridge','High nostril','Septril','Nasallang','Austin bar']],
+    ['Boca e lábios',['Labret','Vertical labret','Labret lateral','Medusa','Monroe','Madonna','Ashley','Smiley','Língua','Frenulum','Dahlia','Snake bites','Angel bites','Spider bites']],
+    ['Rosto',['Sobrancelha','Anti-sobrancelha','Bochecha','Maçã do rosto','Terceiro olho','Bridge vertical']],
+    ['Corpo',['Umbigo','Umbigo inferior','Mamilo','Nuca','Microdermal','Clavícula','Costas','Braço','Superficial']]
   ];
   function regiaoDe(local){
     const r=REGIOES.find(([,ls])=>ls.some(l=>l.toLowerCase()===String(local).toLowerCase()));
