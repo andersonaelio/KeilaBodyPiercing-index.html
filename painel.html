@@ -123,9 +123,9 @@
   .day-head .cnt{margin-left:14px;white-space:nowrap;font-size:.74rem;color:var(--muted-2)}
   .slots[hidden]{display:none}
   .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:7px}
-  .slot{min-height:46px;border:1px solid var(--line-soft);background:transparent;color:var(--muted-2);border-radius:11px;padding:9px 5px;font-family:var(--sans);font-size:.92rem;cursor:pointer;transition:border-color .18s,color .18s;text-align:center;line-height:1.25}
+  .slot{min-height:46px;border:1px dashed rgba(231,200,145,.13);background:transparent;color:var(--muted-2);border-radius:11px;padding:9px 5px;font-family:var(--sans);font-size:.92rem;cursor:pointer;transition:border-color .18s,color .18s;text-align:center;line-height:1.25}
   .slot:hover{border-color:var(--copper);color:var(--cream-dim)}
-  .slot.livre{border-color:var(--open);background:var(--open-soft);color:#8fd3ce}
+  .slot.livre{border-style:solid;border-color:var(--open);background:var(--open-soft);color:#8fd3ce}
   .slot.reservado{background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 46%,var(--gold-3));border-color:transparent;color:#3a2c10;font-weight:500}
   .slot.reservado span{display:block;font-size:.66rem;font-weight:400;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .slot.auto{border-style:dashed;border-color:var(--line);color:var(--muted-2)}
@@ -217,9 +217,10 @@
           <button class="wk-arrow" onclick="mudarSemana(1)" title="Próxima semana">→</button>
         </div>
         <div class="wk-legend">
+          <span><i style="border:1px dashed rgba(231,200,145,.25)"></i>Não aberto</span>
           <span><i style="background:var(--open-soft);border:1px solid var(--open)"></i>Aberto</span>
           <span><i style="background:var(--gold-2)"></i>Alguém marcou</span>
-          <span><i style="border:1px dashed var(--line)"></i>Fechado</span>
+          <span><i style="border:1px dashed var(--line)"></i>Folga</span>
         </div>
         <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
           <button class="day-all" onclick="expandirTudo()" id="btnTudo">abrir todos os dias</button>
@@ -614,6 +615,27 @@
     await loadHorarios(true);
   }
 
+  // foto do celular vem com 2-3MB; reduz para ~1200px WebP antes de subir
+  function comprimirFoto(file,maxLado=1200,q=0.82){
+    return new Promise((ok,erro)=>{
+      const img=new Image(), url=URL.createObjectURL(file);
+      img.onload=()=>{
+        URL.revokeObjectURL(url);
+        let {width:w,height:hh}=img;
+        if(Math.max(w,hh)>maxLado){
+          const f=maxLado/Math.max(w,hh);
+          w=Math.round(w*f); hh=Math.round(hh*f);
+        }
+        const c=document.createElement('canvas');
+        c.width=w; c.height=hh;
+        c.getContext('2d').drawImage(img,0,0,w,hh);
+        c.toBlob(b=>b?ok(b):erro(new Error('falha ao comprimir')),'image/webp',q);
+      };
+      img.onerror=()=>{URL.revokeObjectURL(url);erro(new Error('nao consegui ler a imagem'));};
+      img.src=url;
+    });
+  }
+
   async function loadJoias(){
     const {data,error}=await sb.from('joias').select('*').order('criado_em',{ascending:false});
     if(error){toast('Erro ao carregar joias.',true);return;}
@@ -701,9 +723,9 @@
       const cur=editingId?joias.find(x=>x.id===editingId):null;
       if(cur)foto_url=cur.foto_url;
       if(pendingFile){
-        const ext=(pendingFile.name.split('.').pop()||'jpg').toLowerCase();
-        const path=Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
-        const up=await sb.storage.from('joias').upload(path,pendingFile);
+        const arquivo=await comprimirFoto(pendingFile);
+        const path=Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.webp';
+        const up=await sb.storage.from('joias').upload(path,arquivo,{contentType:'image/webp'});
         if(up.error)throw up.error;
         foto_url=sb.storage.from('joias').getPublicUrl(path).data.publicUrl;
       }
