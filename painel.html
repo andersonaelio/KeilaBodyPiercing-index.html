@@ -213,7 +213,10 @@
           <h2>Seus horários</h2>
           <p>Toque no horário para abrir. Toque de novo para fechar. Só o que estiver aberto aparece para quem for agendar.</p>
         </div>
-        <button class="btn-ghost" onclick="repetirSemana()">Repetir semana passada</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-rose" onclick="abrirManual()" style="padding:12px 20px;min-height:46px">+ Marcar cliente</button>
+          <button class="btn-ghost" onclick="repetirSemana()">Repetir semana passada</button>
+        </div>
       </div>
 
       <div class="card">
@@ -296,6 +299,34 @@
   </div>
 
 </main>
+
+<div class="sheet hidden" id="sheetManual" onclick="if(event.target===this)fecharManual()">
+  <div class="sheet-box">
+    <h3>Marcar cliente</h3>
+    <div class="when">Para quem marcou pelo WhatsApp ou pessoalmente</div>
+
+    <div class="row2">
+      <div><label for="mData">Dia</label><input type="date" id="mData"></div>
+      <div><label for="mHora">Hora</label><input type="time" id="mHora" step="900"></div>
+    </div>
+
+    <label for="mNome">Nome da cliente</label>
+    <input type="text" id="mNome" placeholder="Como você chama ela">
+
+    <label for="mZap">WhatsApp (opcional)</label>
+    <input type="tel" id="mZap" placeholder="(48) 99999-9999" inputmode="numeric">
+
+    <label for="mObs">Anotação (opcional)</label>
+    <textarea id="mObs" rows="2" placeholder="Ex.: helix direita, trouxe a joia dela"></textarea>
+
+    <p class="erro" id="mErro" style="display:none;color:#e8a08f;font-size:.9rem;margin-bottom:12px"></p>
+
+    <div style="display:flex;gap:10px">
+      <button class="btn-rose" id="mBtn" onclick="salvarManual()" style="flex:1;justify-content:center">Marcar</button>
+      <button class="btn-ghost" onclick="fecharManual()">Cancelar</button>
+    </div>
+  </div>
+</div>
 
 <div class="sheet hidden" id="sheet" onclick="if(event.target===this)fecharSheet()">
   <div class="sheet-box">
@@ -423,12 +454,12 @@
 
   async function loadHorarios(quieto){
     const scrollAntes=window.scrollY;
-    if(semanaOffset<0)semanaOffset=0;
-    document.getElementById('wkPrev').disabled=(semanaOffset===0);
+    document.getElementById('wkPrev').disabled=(semanaOffset<=-26);   // até 6 meses atrás
     const dias=diasDaSemana(semanaOffset);
     const de=iso(dias[0]), ate=iso(dias[5]);
     document.getElementById('wkLabel').textContent=
-      `${dias[0].getDate()}/${dias[0].getMonth()+1} — ${dias[5].getDate()}/${dias[5].getMonth()+1}`;
+      `${dias[0].getDate()}/${dias[0].getMonth()+1} — ${dias[5].getDate()}/${dias[5].getMonth()+1}`
+      + (semanaOffset<0?'  ·  já passou':'');
     if(!quieto)document.getElementById('grade').innerHTML='<div class="list-empty">Carregando…</div>';
 
     const {data,error}=await sb.from('horarios').select('*').gte('data',de).lte('data',ate);
@@ -438,7 +469,7 @@
     agendas={};
     const ids=slots.filter(s=>s.status==='reservado').map(s=>s.id);
     if(ids.length){
-      const r=await sb.from('agendamentos').select('*').in('horario_id',ids);
+      const r=await sb.from('agendamentos').select('*').is('cancelado_em',null).in('horario_id',ids);
       (r.data||[]).forEach(a=>agendas[a.horario_id]=a);
     }
     renderGrade();
@@ -454,11 +485,13 @@
       const marcados=doDia.filter(s=>s.status==='reservado').length;
 
       // grade padrão + qualquer horário que exista no banco (inclusive fora de 7h-18h)
-      const horas=[...new Set([...horasPadrao(),...doDia.map(s=>s.hora)])].sort();
+      const horas=(semanaOffset<0)
+        ? doDia.filter(s=>s.status==='reservado').map(s=>s.hora).sort()
+        : [...new Set([...horasPadrao(),...doDia.map(s=>s.hora)])].sort();
 
       let botoes=horas.map(hora=>btnSlot(dia,hora,doDia,agora)).join('');
       const diaPassou=new Date(`${dia}T23:59`)<agora;
-      if(!diaPassou)botoes+=`<button class="slot add" onclick="horarioCustom('${dia}')" title="Outro horário">+</button>`;
+      if(!diaPassou&&semanaOffset>=0)botoes+=`<button class="slot add" onclick="horarioCustom('${dia}')" title="Outro horário">+</button>`;
 
       let resumo=[];
       if(marcados)resumo.push(`<b>${marcados} marcado${marcados>1?'s':''}</b>`);
@@ -466,8 +499,11 @@
       resumo=resumo.length?resumo.join(' · '):'fechado';
 
       const hoje=iso(new Date())===dia;
-      const exp=diasAbertos[dia]!==undefined?diasAbertos[dia]:hoje;   // hoje já vem aberto
-      const acao=(diaPassou||!exp)?'':`<button class="day-all" onclick="event.stopPropagation();abrirDia('${dia}',${abertos===0})">${abertos?'fechar tudo':'abrir o dia'}</button>`;
+      const passado=semanaOffset<0;
+      // no histórico só interessa o que teve atendimento
+      if(passado && !doDia.some(s=>s.status==='reservado'))return '';
+      const exp=passado?true:(diasAbertos[dia]!==undefined?diasAbertos[dia]:hoje);
+      const acao=(passado||diaPassou||!exp)?'':`<button class="day-all" onclick="event.stopPropagation();abrirDia('${dia}',${abertos===0})">${abertos?'fechar tudo':'abrir o dia'}</button>`;
 
       return `<div class="day">
         <div class="day-head" onclick="toggleDia('${dia}')">
@@ -492,7 +528,8 @@
       return `<button class="slot auto" onclick="toggleSlot('${dia}','${hora}')">${hhmm}<span>folga</span></button>`;
     }
     const cls='slot'+(s?' livre':'')+(passado&&!s?' passado':'')+(ehPadrao(hora)?'':' extra');
-    const act=passado&&!s?'':`onclick="toggleSlot('${dia}','${hora}')"`;
+    const longo=` oncontextmenu="event.preventDefault();abrirManual('${dia}','${hora}')" ontouchstart="pressStart('${dia}','${hora}')" ontouchend="pressEnd()" ontouchmove="pressEnd()"`;
+    const act=passado&&!s?'':`onclick="toggleSlot('${dia}','${hora}')"${longo}`;
     return `<button class="${cls}" ${act}>${hhmm}</button>`;
   }
 
@@ -588,6 +625,90 @@
     await loadHorarios(true);
   }
 
+  let pressTimer=null;
+  window.pressStart=function(dia,hora){
+    clearTimeout(pressTimer);
+    pressTimer=setTimeout(()=>{pressTimer=null;abrirManual(dia,hora);},600);
+  };
+  window.pressEnd=function(){if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}};
+
+  window.abrirManual=function(dia,hora){
+    const hoje=new Date();
+    document.getElementById('mData').value=dia||iso(hoje);
+    document.getElementById('mHora').value=hora?hora.slice(0,5):'';
+    ['mNome','mZap','mObs'].forEach(k=>document.getElementById(k).value='');
+    document.getElementById('mErro').style.display='none';
+    document.getElementById('sheetManual').classList.remove('hidden');
+    if(!hora)setTimeout(()=>document.getElementById('mHora').focus(),120);
+  };
+  window.fecharManual=function(){document.getElementById('sheetManual').classList.add('hidden');};
+
+  function erroManual(msg){
+    const e=document.getElementById('mErro');
+    e.textContent=msg; e.style.display='block';
+    const b=document.getElementById('mBtn'); b.disabled=false; b.textContent='Marcar';
+  }
+
+  let salvandoManual=false;
+  window.salvarManual=async function(){
+    if(salvandoManual)return;
+    const dia=document.getElementById('mData').value;
+    const hora=document.getElementById('mHora').value;
+    const nome=document.getElementById('mNome').value.trim();
+    const zap=document.getElementById('mZap').value.replace(/\D/g,'');
+    const obs=document.getElementById('mObs').value.trim();
+    document.getElementById('mErro').style.display='none';
+
+    if(!dia||!hora)return erroManual('Escolha o dia e a hora.');
+    if(nome.length<2)return erroManual('Escreva o nome da cliente.');
+    if(zap && (zap.length<10||zap.length>11))return erroManual('Confira o WhatsApp, com DDD.');
+
+    salvandoManual=true;
+    const b=document.getElementById('mBtn'); b.disabled=true; b.textContent='Marcando…';
+    const horaFull=hora.length===5?hora+':00':hora;
+
+    try{
+      // o horário pode não existir na grade: cria; se existir, reaproveita
+      let {data:existente}=await sb.from('horarios').select('id,status')
+        .eq('data',dia).eq('hora',horaFull).maybeSingle();
+
+      if(existente && existente.status==='reservado'){
+        return erroManual('Já tem alguém marcado nesse horário.');
+      }
+      let hid=existente?.id;
+      if(!hid){
+        const ins=await sb.from('horarios').insert({data:dia,hora:horaFull,status:'reservado'}).select('id').single();
+        if(ins.error)throw ins.error;
+        hid=ins.data.id;
+      }else{
+        const up=await sb.from('horarios').update({status:'reservado',fechado_auto:false}).eq('id',hid);
+        if(up.error)throw up.error;
+      }
+
+      const ag=await sb.from('agendamentos').insert({
+        horario_id:hid, nome, whatsapp:zap||null, nascimento:null,
+        intencao:null, observacao:obs||null, origem:'manual'
+      });
+      if(ag.error)throw ag.error;
+
+      // mesma folga de 1h que o site aplica
+      const lim=new Date(`${dia}T${horaFull}`); lim.setMinutes(lim.getMinutes()+60);
+      const {data:seguintes}=await sb.from('horarios').select('id,hora')
+        .eq('data',dia).eq('status','livre').gt('hora',horaFull);
+      const fechar=(seguintes||[]).filter(s=>new Date(`${dia}T${s.hora}`)<lim).map(s=>s.id);
+      if(fechar.length)await sb.from('horarios').update({status:'fechado',fechado_auto:true}).in('id',fechar);
+
+      fecharManual();
+      toast(`${nome} marcada para ${hora}.`);
+      await loadHorarios(true);
+    }catch(e){
+      erroManual('Não consegui marcar: '+(e.message||'tente de novo'));
+    }finally{
+      salvandoManual=false;
+      const bb=document.getElementById('mBtn'); bb.disabled=false; bb.textContent='Marcar';
+    }
+  };
+
   function verReserva(id){
     const s=slots.find(x=>x.id===id), a=agendas[id];
     if(!a){toast('Não achei os dados dessa reserva.',true);return;}
@@ -596,15 +717,21 @@
     document.getElementById('shNome').textContent=a.nome;
     document.getElementById('shQuando').textContent=
       d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})+' · '+s.hora.slice(0,5);
-    document.getElementById('shZap').textContent=a.whatsapp;
-    const idade=Math.floor((Date.now()-new Date(a.nascimento))/31557600000);
-    document.getElementById('shNasc').textContent=
-      new Date(a.nascimento+'T12:00').toLocaleDateString('pt-BR')+` (${idade} anos)`+(idade<18?' ⚠ menor':'');
-    document.getElementById('shInt').textContent=INTENCOES[a.intencao]||a.intencao;
+    document.getElementById('shZap').textContent=a.whatsapp||'não informado';
+    if(a.nascimento){
+      const idade=Math.floor((Date.now()-new Date(a.nascimento))/31557600000);
+      document.getElementById('shNasc').textContent=
+        new Date(a.nascimento+'T12:00').toLocaleDateString('pt-BR')+` (${idade} anos)`+(idade<18?' ⚠ menor':'');
+    }else{
+      document.getElementById('shNasc').textContent='—';
+    }
+    document.getElementById('shInt').textContent=
+      (INTENCOES[a.intencao]||a.intencao||'—')+(a.origem==='manual'?' · marcado por você':'');
     document.getElementById('shObs').textContent=a.observacao||'—';
-    document.getElementById('shZapBtn').href=
-      'https://wa.me/'+zapE164(a.whatsapp)+
-      '?text='+encodeURIComponent(`Oi ${a.nome.split(' ')[0]}! Aqui é a Keila. Confirmando seu horário: ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${s.hora.slice(0,5)}.`);
+    document.getElementById('shZapBtn').style.display=a.whatsapp?'inline-flex':'none';
+    document.getElementById('shZapBtn').href=a.whatsapp?
+      ('https://wa.me/'+zapE164(a.whatsapp)+
+      '?text='+encodeURIComponent(`Oi ${a.nome.split(' ')[0]}! Aqui é a Keila. Confirmando seu horário: ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${s.hora.slice(0,5)}.`)):'#';
     document.getElementById('sheet').classList.remove('hidden');
   }
   function zapE164(n){                          // mesma regra do zap_norm() no banco
@@ -618,7 +745,7 @@
     if(!slotAberto)return;
     if(!confirm('Cancelar este agendamento? O horário volta a ficar aberto. Avise a cliente pelo WhatsApp — o sistema não avisa sozinho.'))return;
     const id=slotAberto;
-    await sb.from('agendamentos').delete().eq('horario_id',id);
+    await sb.from('agendamentos').update({cancelado_em:new Date().toISOString()}).eq('horario_id',id).is('cancelado_em',null);
     const {error}=await sb.from('horarios').update({status:'livre'}).eq('id',id);
     if(error){toast('Não consegui cancelar.',true);return;}
     const s=slots.find(x=>x.id===id);
