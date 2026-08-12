@@ -59,6 +59,9 @@
   .loc-chip button:hover{color:#e8a08f}
   .loc-add{display:flex;gap:8px;flex-wrap:wrap}
   .loc-add input{flex:1 1 160px;min-width:0}
+  .loc-add select{flex:0 1 160px;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--cream);font-family:var(--sans);font-size:.92rem;padding:0 12px;min-height:46px}
+  .loc-opt .x{margin-left:7px;opacity:.55;font-size:.9rem}
+  .loc-opt .x:hover{opacity:1}
   .loc-add input{margin-bottom:0}
   .loc-add button{white-space:nowrap;flex:0 0 auto;min-height:46px;background:rgba(231,200,145,.1);border:1px solid rgba(231,200,145,.3);color:var(--gold-2);border-radius:12px;padding:0 16px;cursor:pointer;font-family:var(--sans);font-size:.8rem;letter-spacing:.04em}
   .loc-add button:hover{background:rgba(231,200,145,.18)}
@@ -149,7 +152,7 @@
   .hidden{display:none}
 
   @media(max-width:560px){
-    .loc-add input,.loc-add button{flex:1 1 100%}
+    .loc-add input,.loc-add select,.loc-add button{flex:1 1 100%}
     .loc-add button{padding:12px 16px;font-size:.85rem}
     .row2{grid-template-columns:1fr}
     .tabs{gap:16px}
@@ -269,6 +272,11 @@
         <div class="loc-add">
           <input type="text" id="locInput" list="locOptions" placeholder="Faltou algum? Escreva aqui…" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addLocal();}">
           <datalist id="locOptions"></datalist>
+          <select id="locRegiao" aria-label="Em que parte do corpo">
+            <option value="">Em que parte?</option>
+            <option>Orelha</option><option>Nariz</option><option>Boca e lábios</option>
+            <option>Rosto</option><option>Corpo</option><option>Outros</option>
+          </select>
           <button type="button" onclick="addLocal()">+ Adicionar</button>
         </div>
         <div class="loc-hint">Toque nos locais para marcar. Se faltar algum, escreva acima e toque em <b>+ Adicionar</b> — ele passa a aparecer na lista.</div>
@@ -493,7 +501,12 @@
     return (mm===0||mm===30) && hh>=HORA_INI && hh<=HORA_FIM && (hh*60+mm)<=HORA_FIM*60;
   };
 
+  let mexendoSlot=false;
   async function toggleSlot(dia,hora){
+    if(mexendoSlot)return; mexendoSlot=true;
+    try{ await _toggleSlot(dia,hora); } finally { mexendoSlot=false; }
+  }
+  async function _toggleSlot(dia,hora){
     const s=slots.find(x=>x.data===dia&&x.hora===hora);
     if(s){
       if(s.status==='reservado')return;
@@ -642,7 +655,7 @@
   async function loadJoias(){
     const {data,error}=await sb.from('joias').select('*').order('criado_em',{ascending:false});
     if(error){toast('Erro ao carregar joias.',true);return;}
-    joias=data||[];renderCatOptions();renderLocOptions();renderLocChips();renderList();
+    joias=data||[];await carregarLocais();renderCatOptions();renderLocOptions();renderLocChips();renderList();
   }
   const CATS_PADRAO=['Argolas','Pontos / Labrets','Correntes','Microdermais','Ornamentadas'];
   function renderCatOptions(){
@@ -665,6 +678,7 @@
   function previewFile(input){const f=input.files[0];if(!f)return;pendingFile=f;const url=URL.createObjectURL(f);document.getElementById('upText').innerHTML=`<img src="${url}" alt="Foto escolhida para a joia"><div>Foto carregada — clique para trocar</div>`;}
 
   let locaisAtuais=[];
+  let locaisCustom=[];   // {nome, regiao} vindos do banco
   const LOCAIS_CATALOGO=[
     ['Orelha',['Lóbulo','Hélix','Forward hélix','Anti-hélix','Flat','Tragus','Anti-tragus','Daith','Rook','Conch','Conch rim','Snug','Industrial','Orbital','Transversal do lóbulo']],
     ['Nariz',['Nostril','Septo','Bridge','High nostril','Septril','Nasallang','Austin bar']],
@@ -678,34 +692,87 @@
     sel.innerHTML=locaisAtuais.length
       ? 'Marcados: <b>'+locaisAtuais.join(', ')+'</b>'
       : '<span style="color:var(--muted-2)">Nenhum local marcado ainda.</span>';
-    // locais personalizados (fora do catálogo)
-    const extras=[...new Set([...locaisAtuais,...joias.flatMap(j=>j.locais||[])])]
-      .filter(l=>!catalogoTodos().some(c=>c.toLowerCase()===l.toLowerCase()));
-    const grupos=[...LOCAIS_CATALOGO];
-    if(extras.length)grupos.push(['Outros',extras]);
-    document.getElementById('locGroups').innerHTML=grupos.map(([lab,opts])=>
+
+    const noCatalogo=n=>catalogoTodos().some(c=>c.toLowerCase()===n.toLowerCase());
+    // tudo que não é do catálogo: da tabela, das joias e do que está marcado agora
+    const extras=new Map();
+    locaisCustom.forEach(l=>{if(!noCatalogo(l.nome))extras.set(l.nome.toLowerCase(),l);});
+    [...locaisAtuais,...joias.flatMap(j=>j.locais||[])].forEach(n=>{
+      if(!n||noCatalogo(n))return;
+      if(!extras.has(n.toLowerCase()))extras.set(n.toLowerCase(),{nome:n,regiao:'Outros'});
+    });
+
+    const grupos=LOCAIS_CATALOGO.map(([lab,opts])=>[lab,opts.map(o=>({nome:o,proprio:false}))]);
+    [...extras.values()].forEach(l=>{
+      let g=grupos.find(([lab])=>lab===l.regiao);
+      if(!g){g=['Outros',[]];grupos.push(g);}
+      g[1].push({nome:l.nome,proprio:true});
+    });
+
+    document.getElementById('locGroups').innerHTML=grupos.filter(([,o])=>o.length).map(([lab,opts])=>
       `<div class="loc-group"><div class="loc-group-lab">${lab}</div><div class="loc-opts">`+
-      opts.map(o=>`<button type="button" class="loc-opt ${locaisAtuais.some(l=>l.toLowerCase()===o.toLowerCase())?'on':''}" onclick="toggleLocal('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')+
+      opts.map(o=>{
+        const on=locaisAtuais.some(l=>l.toLowerCase()===o.nome.toLowerCase());
+        const esc1=o.nome.replace(/'/g,"\\'");
+        const x=o.proprio?`<span class="x" onclick="event.stopPropagation();apagarLocal('${esc1}')" title="Apagar da lista">×</span>`:'';
+        return `<button type="button" class="loc-opt ${on?'on':''}" onclick="toggleLocal('${esc1}')">${o.nome}${x}</button>`;
+      }).join('')+
       '</div></div>').join('');
   }
+
+  async function carregarLocais(){
+    const {data}=await sb.from('locais').select('nome,regiao').order('nome');
+    locaisCustom=data||[];
+  }
+
+  window.apagarLocal=async function(nome){
+    const emUso=joias.filter(j=>(j.locais||[]).some(l=>l.toLowerCase()===nome.toLowerCase()));
+    if(emUso.length){
+      toast(`"${nome}" está sendo usado em ${emUso.length} joia(s). Tire de lá primeiro.`,true);
+      return;
+    }
+    if(!confirm(`Apagar "${nome}" da lista de locais?\n\nEle some das opções. Você pode criar de novo depois.`))return;
+    await sb.from('locais').delete().eq('nome',nome);
+    const i=locaisAtuais.findIndex(l=>l.toLowerCase()===nome.toLowerCase());
+    if(i>=0)locaisAtuais.splice(i,1);
+    await carregarLocais(); renderLocChips();
+    toast(`"${nome}" apagado.`);
+  };
+
   window.toggleLocal=function(v){
     const i=locaisAtuais.findIndex(l=>l.toLowerCase()===v.toLowerCase());
     if(i>=0)locaisAtuais.splice(i,1);else locaisAtuais.push(v);
     renderLocChips();
   };
   function renderLocOptions(){
-    const todos=[...new Set([...catalogoTodos(),...joias.flatMap(j=>j.locais||[])])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    const todos=[...new Set([...catalogoTodos(),...locaisCustom.map(l=>l.nome),...joias.flatMap(j=>j.locais||[])])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
     document.getElementById('locOptions').innerHTML=todos.map(l=>`<option value="${l.replace(/"/g,'&quot;')}">`).join('');
   }
-  window.addLocal=function(){
+  window.addLocal=async function(){
     const inp=document.getElementById('locInput');
+    const selReg=document.getElementById('locRegiao');
     let v=(inp.value||'').trim().replace(/\s+/g,' ');
     if(!v)return;
-    const existentes=[...new Set([...catalogoTodos(),...joias.flatMap(j=>j.locais||[])])];
+
+    const existentes=[...new Set([...catalogoTodos(),...locaisCustom.map(l=>l.nome),...joias.flatMap(j=>j.locais||[])])];
     const match=existentes.find(c=>c.toLowerCase()===v.toLowerCase());
-    v=match||v;
-    if(!locaisAtuais.some(l=>l.toLowerCase()===v.toLowerCase()))locaisAtuais.push(v);
-    inp.value='';renderLocChips();
+    if(match){                                   // já existe: só marca
+      v=match;
+      if(!locaisAtuais.some(l=>l.toLowerCase()===v.toLowerCase()))locaisAtuais.push(v);
+      inp.value=''; selReg.value=''; renderLocChips(); return;
+    }
+
+    const regiao=selReg.value;
+    if(!regiao){
+      toast('Escolha em que parte do corpo esse local fica.',true);
+      selReg.focus(); return;
+    }
+    const {error}=await sb.from('locais').insert({nome:v,regiao});
+    if(error && error.code!=='23505'){toast('Não consegui salvar esse local.',true);return;}
+    locaisAtuais.push(v);
+    inp.value=''; selReg.value='';
+    await carregarLocais(); renderLocChips(); renderLocOptions();
+    toast(`"${v}" criado em ${regiao}.`);
   };
 
   function normalizarCategoria(v){
@@ -715,12 +782,16 @@
     const match=existentes.find(c=>c.toLowerCase()===t.toLowerCase());
     return match||t;
   }
+  let salvando=false;                       // trava contra toque duplo no celular
   async function saveJoia(){
-    if((document.getElementById('locInput').value||'').trim())addLocal();
+    if(salvando)return;
+    if((document.getElementById('locInput').value||'').trim())await addLocal();
     const nome=document.getElementById('fName').value.trim();
     const preco=document.getElementById('fPrice').value;
     if(!nome||!preco){toast('Preencha pelo menos o nome e o preço.',true);return;}
-    const btn=document.getElementById('saveBtn');btn.textContent='Salvando…';
+    salvando=true;
+    const btn=document.getElementById('saveBtn');
+    btn.disabled=true; btn.textContent='Salvando…';
     try{
       let foto_url=null;
       const cur=editingId?joias.find(x=>x.id===editingId):null;
@@ -739,7 +810,10 @@
       if(res.error)throw res.error;
       resetForm();await loadJoias();toast(editingId?'Joia atualizada!':'Joia adicionada!');
     }catch(e){toast('Erro ao salvar: '+(e.message||'tente novamente'),true);}
-    btn.textContent=editingId?'Salvar alterações':'Adicionar ao catálogo';
+    finally{
+      salvando=false; btn.disabled=false;
+      btn.textContent=editingId?'Salvar alterações':'Adicionar ao catálogo';
+    }
   }
 
   function editJoia(id){
