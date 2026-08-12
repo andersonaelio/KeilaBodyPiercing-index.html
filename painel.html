@@ -105,6 +105,22 @@
   .tab:hover{color:var(--cream-dim)}
   .tab.on{color:var(--gold-2);border-bottom-color:var(--gold-2)}
 
+  /* ── próximos atendimentos ── */
+  .prox-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .prox-head h4{font-family:var(--serif);font-weight:500;font-size:1.15rem}
+  .prox-head span{font-size:.78rem;color:var(--muted-2)}
+  .prox-item{display:flex;align-items:center;gap:13px;padding:12px 0;border-top:1px solid var(--line-soft);cursor:pointer;transition:opacity .2s}
+  .prox-item:first-child{border-top:none}
+  .prox-item:hover{opacity:.75}
+  .prox-quando{flex:0 0 84px;text-align:center;background:rgba(231,200,145,.1);border:1px solid var(--gold-2);border-radius:10px;padding:7px 4px;line-height:1.2}
+  .prox-quando b{display:block;font-size:.95rem;color:var(--gold-1)}
+  .prox-quando span{font-size:.68rem;color:var(--muted);letter-spacing:.04em}
+  .prox-quem{flex:1;min-width:0}
+  .prox-quem b{display:block;font-size:.98rem;font-weight:400}
+  .prox-quem span{font-size:.79rem;color:var(--muted-2);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prox-hoje{color:var(--gold-2);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+  .prox-vazio{color:var(--muted-2);font-size:.9rem;padding:4px 0 2px}
+
   /* ── grade de horários ── */
   .wk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
   .wk-nav b{font-family:var(--serif);font-weight:500;font-size:1.18rem}
@@ -120,6 +136,9 @@
   .day-head:hover h4{color:var(--gold-2)}
   .caret{color:var(--muted-2);font-size:1.15rem;line-height:1;transition:transform .2s;display:inline-block;align-self:center}
   .caret.on{transform:rotate(90deg);color:var(--gold-2)}
+  .day.tem-cliente .day-head h4{color:var(--gold-1)}
+  .day.tem-cliente .caret{color:var(--gold-2)}
+  .cnt .marc{color:var(--gold-2);font-weight:500}
   .day-head h4{font-family:var(--serif);font-weight:500;font-size:1.12rem}
   .day-head small{color:var(--muted-2);font-size:.78rem}
   .day-all{margin-left:auto;background:none;border:none;color:var(--muted-2);font-family:var(--sans);font-size:.74rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 4px}
@@ -217,6 +236,14 @@
           <button class="btn-rose" onclick="abrirManual()" style="padding:12px 20px;min-height:46px">+ Marcar cliente</button>
           <button class="btn-ghost" onclick="repetirSemana()">Repetir semana passada</button>
         </div>
+      </div>
+
+      <div class="card" id="proximosCard" style="margin-bottom:18px;display:none">
+        <div class="prox-head">
+          <h4>Quem vem por aí</h4>
+          <span id="proxCount"></span>
+        </div>
+        <div id="proximos"></div>
       </div>
 
       <div class="card">
@@ -473,8 +500,59 @@
       (r.data||[]).forEach(a=>agendas[a.horario_id]=a);
     }
     renderGrade();
+    carregarProximos();
     if(quieto)window.scrollTo({top:scrollAntes});   // toque num horário não pode jogar a página pro topo
   }
+
+  async function carregarProximos(){
+    const hoje=iso(new Date());
+    const {data:hs}=await sb.from('horarios').select('id,data,hora')
+      .eq('status','reservado').gte('data',hoje).order('data').order('hora').limit(40);
+    if(!hs||!hs.length){desenharProximos([]);return;}
+    const {data:ags}=await sb.from('agendamentos').select('*')
+      .is('cancelado_em',null).in('horario_id',hs.map(x=>x.id));
+    const mapa={}; (ags||[]).forEach(a=>mapa[a.horario_id]=a);
+    const agora=new Date();
+    desenharProximos(hs
+      .filter(x=>new Date(`${x.data}T${x.hora}`)>=agora && mapa[x.id])
+      .map(x=>({...x,ag:mapa[x.id]})));
+  }
+
+  function desenharProximos(lista){
+    const card=document.getElementById('proximosCard');
+    const alvo=document.getElementById('proximos');
+    const cnt=document.getElementById('proxCount');
+    card.style.display='block';
+
+    if(!lista.length){
+      cnt.textContent='';
+      alvo.innerHTML='<div class="prox-vazio">Ninguém marcado por enquanto. Quando alguém agendar, aparece aqui.</div>';
+      return;
+    }
+    const hoje=iso(new Date());
+    cnt.textContent=lista.length===1?'1 cliente':`${lista.length} clientes`;
+    alvo.innerHTML=lista.slice(0,6).map(x=>{
+      const d=new Date(`${x.data}T${x.hora}`);
+      const ehHoje=x.data===hoje;
+      const dia=ehHoje?'hoje':d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','');
+      const obs=[x.ag.observacao,INTENCOES[x.ag.intencao]].filter(Boolean)[0]||'';
+      return `<div class="prox-item" onclick="irPara('${x.data}','${x.id}')">
+        <div class="prox-quando"><b>${x.hora.slice(0,5)}</b><span>${dia} ${d.getDate()}/${d.getMonth()+1}</span></div>
+        <div class="prox-quem">
+          <b>${esc(x.ag.nome)}</b>
+          <span>${esc(obs)||'sem anotação'}</span>
+        </div>
+        ${ehHoje?'<span class="prox-hoje">hoje</span>':''}
+      </div>`;
+    }).join('') + (lista.length>6?`<div class="prox-vazio">e mais ${lista.length-6} adiante</div>`:'');
+  }
+
+  window.irPara=function(dia,horarioId){
+    const alvo=new Date(dia+'T12:00'), base=segundaDaSemana(0);
+    const diff=Math.round((alvo-base)/(7*86400000));
+    if(diff!==semanaOffset){semanaOffset=diff;loadHorarios().then(()=>verReserva(horarioId));}
+    else verReserva(horarioId);
+  };
 
   function renderGrade(){
     const agora=new Date();
@@ -494,7 +572,7 @@
       if(!diaPassou&&semanaOffset>=0)botoes+=`<button class="slot add" onclick="horarioCustom('${dia}')" title="Outro horário">+</button>`;
 
       let resumo=[];
-      if(marcados)resumo.push(`<b>${marcados} marcado${marcados>1?'s':''}</b>`);
+      if(marcados)resumo.push(`<span class="marc">${marcados} cliente${marcados>1?'s':''}</span>`);
       if(abertos)resumo.push(`${abertos} aberto${abertos>1?'s':''}`);
       resumo=resumo.length?resumo.join(' · '):'fechado';
 
@@ -505,7 +583,7 @@
       const exp=passado?true:(diasAbertos[dia]!==undefined?diasAbertos[dia]:hoje);
       const acao=(passado||diaPassou||!exp)?'':`<button class="day-all" onclick="event.stopPropagation();abrirDia('${dia}',${abertos===0})">${abertos?'fechar tudo':'abrir o dia'}</button>`;
 
-      return `<div class="day">
+      return `<div class="day${marcados?' tem-cliente':''}">
         <div class="day-head" onclick="toggleDia('${dia}')">
           <span class="caret${exp?' on':''}">›</span>
           <h4>${DIAS[i]}</h4><small>${d.getDate()}/${d.getMonth()+1}${hoje?' · hoje':''}</small>
