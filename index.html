@@ -736,8 +736,11 @@
     ['Rosto',['Sobrancelha','Anti-sobrancelha','Bochecha','Maçã do rosto','Terceiro olho','Bridge vertical']],
     ['Corpo',['Umbigo','Umbigo inferior','Mamilo','Nuca','Microdermal','Clavícula','Costas','Braço','Superficial']]
   ];
+  let LOCAIS_DB={};                 // nome minúsculo -> região, definido pela Keila no painel
   function regiaoDe(local){
-    const r=REGIOES.find(([,ls])=>ls.some(l=>l.toLowerCase()===String(local).toLowerCase()));
+    const k=String(local).toLowerCase();
+    if(LOCAIS_DB[k])return LOCAIS_DB[k];
+    const r=REGIOES.find(([,ls])=>ls.some(l=>l.toLowerCase()===k));
     return r?r[0]:'Outros';
   }
   function regioesDaJoia(j){return [...new Set((j.locais||[]).map(regiaoDe))];}
@@ -823,7 +826,12 @@
   (async()=>{
     const {data,error}=await sb.from('joias').select('*').order('criado_em',{ascending:false});
     if(error){document.getElementById('catGrid').innerHTML='<div class="cat-state">Não foi possível carregar o catálogo agora.</div>';return;}
-    _joias=data||[];_renderLocFilters();_renderFilters();_renderGrid();
+    _joias=data||[];
+    try{
+      const r=await sb.from('locais').select('nome,regiao');
+      (r.data||[]).forEach(l=>{LOCAIS_DB[l.nome.toLowerCase()]=l.regiao;});
+    }catch(e){/* sem a tabela, cai no catálogo fixo */}
+    _renderLocFilters();_renderFilters();_renderGrid();
   })();
 </script>
 <div class="jm-overlay" id="jmOverlay" onclick="if(event.target===this)fecharJoia()">
