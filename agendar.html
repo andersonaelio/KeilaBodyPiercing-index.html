@@ -60,6 +60,15 @@
   .aviso a{color:var(--rose-2);text-decoration:underline;text-underline-offset:3px}
 
   /* 4 ── grade */
+  .semana{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 20px;margin-bottom:6px;border-bottom:1px solid var(--line-soft)}
+  .sem-arrow{width:46px;height:46px;flex:0 0 46px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--cream-dim);font-size:1.15rem;cursor:pointer;transition:border-color .2s,opacity .2s}
+  .sem-arrow:hover:not(:disabled){border-color:var(--copper)}
+  .sem-arrow:disabled{opacity:.25;cursor:default}
+  .sem-lab{text-align:center;line-height:1.3}
+  .sem-lab b{font-family:var(--serif);font-weight:500;font-size:1.2rem;display:block}
+  .sem-lab span{font-size:.8rem;color:var(--muted-2)}
+  .mais{display:block;width:100%;margin-top:26px;padding:15px;border-radius:12px;border:1px dashed var(--line);background:transparent;color:var(--muted);font-family:var(--sans);font-size:.88rem;cursor:pointer;transition:all .2s}
+  .mais:hover{border-color:var(--copper);color:var(--cream)}
   .dia{border-top:1px solid var(--line-soft);padding:20px 0 6px}
   .dia:first-child{border-top:none;padding-top:0}
   .dia h3{font-size:1.15rem;display:flex;align-items:baseline;gap:9px;margin-bottom:13px;text-transform:capitalize}
@@ -193,7 +202,7 @@
 
   const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
   const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  let slots=[], escolhido=null, intencao=null;
+  let slots=[], escolhido=null, intencao=null, semana=0;
 
   const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const dataLocal=(d,h)=>new Date(`${d}T${h}`);
@@ -202,6 +211,27 @@
     const d=dataLocal(dataStr,hora);
     return `${DIAS[d.getDay()]}, ${d.getDate()} de ${MESES[d.getMonth()]} às ${hora.slice(0,5)}`;
   }
+  function segunda(off){
+    const d=new Date(); d.setHours(0,0,0,0);
+    const dow=d.getDay();
+    d.setDate(d.getDate()-(dow===0?6:dow-1)+off*7);
+    return d;
+  }
+  function slotsDaSemana(off){
+    const ini=segunda(off), fim=new Date(ini); fim.setDate(ini.getDate()+7);
+    return slots.filter(s=>{const d=dataLocal(s.data,'12:00:00');return d>=ini&&d<fim;});
+  }
+  function temAlgum(off){return slotsDaSemana(off).length>0;}
+  function proximaComHorario(from,passo){
+    for(let i=from+passo;i>=0&&i<=10;i+=passo)if(temAlgum(i))return i;
+    return null;
+  }
+  function mudarSemana(passo){
+    const alvo=proximaComHorario(semana,passo);
+    if(alvo===null)return;
+    semana=alvo; render(); window.scrollTo({top:0,behavior:'smooth'});
+  }
+
   function view(v){
     for(const id of ['viewGrade','viewForm','viewOk'])
       document.getElementById(id).classList.toggle('hidden',id!=='view'+v);
@@ -234,16 +264,35 @@
   }
 
   function render(){
+    const alvo=document.getElementById('grade');
     if(!slots.length){
-      document.getElementById('grade').innerHTML=
+      alvo.innerHTML=
         `<div class="vazio"><h3>Sem horários abertos no momento</h3>
          <p>A agenda desta semana já fechou. Me chama no WhatsApp que a gente encontra um horário para você.</p>${btnZap()}</div>`;
       return;
     }
-    const porDia={};
-    slots.forEach(s=>{(porDia[s.data]=porDia[s.data]||[]).push(s);});
+    if(!temAlgum(semana)){                       // começa na primeira semana com horário
+      const prox=proximaComHorario(-1,1);
+      if(prox!==null)semana=prox;
+    }
 
-    document.getElementById('grade').innerHTML=Object.keys(porDia).sort().map(dia=>{
+    const daSemana=slotsDaSemana(semana);
+    const ini=segunda(semana), fim=new Date(ini); fim.setDate(ini.getDate()+6);
+    const antes=proximaComHorario(semana,-1), depois=proximaComHorario(semana,1);
+
+    const nav=`<div class="semana">
+      <button class="sem-arrow" ${antes===null?'disabled':''} onclick="mudarSemana(-1)" aria-label="Semana anterior">←</button>
+      <div class="sem-lab">
+        <b>${ini.getDate()}/${ini.getMonth()+1} — ${fim.getDate()}/${fim.getMonth()+1}</b>
+        <span>${semana===0?'esta semana':'semana de '+MESES[ini.getMonth()]}</span>
+      </div>
+      <button class="sem-arrow" ${depois===null?'disabled':''} onclick="mudarSemana(1)" aria-label="Próxima semana">→</button>
+    </div>`;
+
+    const porDia={};
+    daSemana.forEach(s=>{(porDia[s.data]=porDia[s.data]||[]).push(s);});
+
+    const dias=Object.keys(porDia).sort().map(dia=>{
       const d=dataLocal(dia,'12:00:00');
       const botoes=porDia[dia].map(s=>
         `<button class="hora" onclick="escolher('${s.id}')">${s.hora.slice(0,5)}</button>`).join('');
@@ -252,6 +301,11 @@
         <div class="horas">${botoes}</div>
       </div>`;
     }).join('');
+
+    const rodape=depois!==null
+      ? `<button class="mais" onclick="mudarSemana(1)">Ver a próxima semana →</button>` : '';
+
+    alvo.innerHTML=nav+dias+rodape;
   }
 
   function escolher(id){
