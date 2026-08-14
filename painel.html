@@ -479,7 +479,9 @@
   }
   function mudarSemana(n){semanaOffset+=n;diasAbertos={};const b=document.getElementById('btnTudo');if(b)b.textContent='abrir todos os dias';loadHorarios();window.scrollTo({top:0,behavior:'smooth'});}
 
+  let _cargaId=0;
   async function loadHorarios(quieto){
+    const meuId=++_cargaId;
     const scrollAntes=window.scrollY;
     document.getElementById('wkPrev').disabled=(semanaOffset<=-26);   // até 6 meses atrás
     const dias=diasDaSemana(semanaOffset);
@@ -490,6 +492,7 @@
     if(!quieto)document.getElementById('grade').innerHTML='<div class="list-empty">Carregando…</div>';
 
     const {data,error}=await sb.from('horarios').select('*').gte('data',de).lte('data',ate);
+    if(meuId!==_cargaId)return;              // uma semana mais nova já foi pedida — descarta esta
     if(error){toast('Não consegui carregar os horários.',true);return;}
     slots=data||[];
 
@@ -497,8 +500,10 @@
     const ids=slots.filter(s=>s.status==='reservado').map(s=>s.id);
     if(ids.length){
       const r=await sb.from('agendamentos').select('*').is('cancelado_em',null).in('horario_id',ids);
+      if(meuId!==_cargaId)return;
       (r.data||[]).forEach(a=>agendas[a.horario_id]=a);
     }
+    if(meuId!==_cargaId)return;
     renderGrade();
     carregarProximos();
     if(quieto)window.scrollTo({top:scrollAntes});   // toque num horário não pode jogar a página pro topo
@@ -769,8 +774,8 @@
       });
       if(ag.error)throw ag.error;
 
-      // mesma folga de 1h que o site aplica
-      const lim=new Date(`${dia}T${horaFull}`); lim.setMinutes(lim.getMinutes()+60);
+      // mesma folga de 30min que o site aplica
+      const lim=new Date(`${dia}T${horaFull}`); lim.setMinutes(lim.getMinutes()+30);
       const {data:seguintes}=await sb.from('horarios').select('id,hora')
         .eq('data',dia).eq('status','livre').gt('hora',horaFull);
       const fechar=(seguintes||[]).filter(s=>new Date(`${dia}T${s.hora}`)<lim).map(s=>s.id);
@@ -787,9 +792,15 @@
     }
   };
 
-  function verReserva(id){
-    const s=slots.find(x=>x.id===id), a=agendas[id];
-    if(!a){toast('Não achei os dados dessa reserva.',true);return;}
+  async function verReserva(id){
+    const s=slots.find(x=>x.id===id);
+    let a=agendas[id];
+    if(!a){
+      const r=await sb.from('agendamentos').select('*').eq('horario_id',id).is('cancelado_em',null).maybeSingle();
+      a=r.data;
+      if(a)agendas[id]=a;
+    }
+    if(!s||!a){toast('Não achei os dados dessa reserva. Puxa a tela pra baixo pra atualizar.',true);return;}
     slotAberto=id;
     const d=new Date(`${s.data}T${s.hora}`);
     document.getElementById('shNome').textContent=a.nome;
@@ -812,11 +823,7 @@
       '?text='+encodeURIComponent(`Oi ${a.nome.split(' ')[0]}! Aqui é a Keila. Confirmando seu horário: ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${s.hora.slice(0,5)}.`)):'#';
     document.getElementById('sheet').classList.remove('hidden');
   }
-  function zapE164(n){                          // mesma regra do zap_norm() no banco
-    const d=String(n||'').replace(/\D/g,'');
-    const nac=(d.length>=12&&d.length<=13&&d.startsWith('55'))?d.slice(2):d;
-    return '55'+nac;
-  }
+
   function fecharSheet(){document.getElementById('sheet').classList.add('hidden');slotAberto=null;}
 
   async function cancelarReserva(){
