@@ -552,11 +552,11 @@
     }).join('') + (lista.length>6?`<div class="prox-vazio">e mais ${lista.length-6} adiante</div>`:'');
   }
 
-  window.irPara=function(dia,horarioId){
+  window.irPara=async function(dia,horarioId){
     const alvo=new Date(dia+'T12:00'), base=segundaDaSemana(0);
-    const diff=Math.round((alvo-base)/(7*86400000));
-    if(diff!==semanaOffset){semanaOffset=diff;loadHorarios().then(()=>verReserva(horarioId));}
-    else verReserva(horarioId);
+    const diff=Math.floor((alvo-base)/(7*86400000));   // floor: sexta/sábado ficam na semana certa
+    if(diff!==semanaOffset){semanaOffset=diff;await loadHorarios();}
+    await verReserva(horarioId);
   };
 
   function renderGrade(){
@@ -631,14 +631,21 @@
     if(s){
       if(s.status==='reservado')return;
       if(s.status==='fechado'){   // folga automática → um toque reabre
-        const {error}=await sb.from('horarios').update({status:'livre',fechado_auto:false}).eq('id',s.id);
+        const {data:ok,error}=await sb.from('horarios')
+          .update({status:'livre',fechado_auto:false}).eq('id',s.id).eq('status','fechado').select();
         if(error){toast('Não consegui reabrir esse horário.',true);return;}
+        if(!ok||!ok.length)toast('Esse horário mudou. Atualizando a tela.',true);
         await loadHorarios(true);return;
       }
       // horário fora da grade some da tela ao fechar — confirma antes
       if(!ehPadrao(hora) && !confirm(`Apagar o horário das ${hora.slice(0,5)}?\n\nEle sai da grade. Para ter de novo, use o "+".`))return;
-      const {error}=await sb.from('horarios').delete().eq('id',s.id);
+      // só apaga se AINDA estiver livre no banco agora — nunca em cima de reserva que chegou nesse meio-tempo
+      const {data:apagou,error}=await sb.from('horarios').delete().eq('id',s.id).eq('status','livre').select();
       if(error){toast('Não consegui fechar esse horário.',true);return;}
+      if(!apagou||!apagou.length){
+        toast('Alguém acabou de marcar esse horário! Atualizando a tela — confere antes de mexer de novo.',true);
+        await loadHorarios(true);return;
+      }
       if(!ehPadrao(hora))toast(`Horário das ${hora.slice(0,5)} apagado.`);
     }else{
       const {error}=await sb.from('horarios').insert({data:dia,hora,status:'livre'});
@@ -665,9 +672,14 @@
       if(!ids.length){toast('Esse dia já está fechado.');return;}
       const marcou=slots.some(s=>s.data===dia&&s.status==='reservado');
       if(!confirm(`Fechar ${ids.length} horário(s) desse dia?`+(marcou?' Quem já marcou continua marcado.':'')))return;
-      const {error}=await sb.from('horarios').delete().in('id',ids);
+      const {data:apagados,error}=await sb.from('horarios').delete().in('id',ids).eq('status','livre').select();
       if(error){toast('Não consegui fechar o dia.',true);return;}
-      toast('Dia fechado.');
+      const n=(apagados||[]).length;
+      if(n<ids.length){
+        toast(`Fechei ${n}. ${ids.length-n} tinha(m) cliente marcada e ficaram — confere a grade.`,true);
+      }else{
+        toast('Dia fechado.');
+      }
     }
     await loadHorarios(true);
   }
@@ -764,8 +776,13 @@
         if(ins.error)throw ins.error;
         hid=ins.data.id;
       }else{
-        const up=await sb.from('horarios').update({status:'reservado',fechado_auto:false}).eq('id',hid);
+        const up=await sb.from('horarios').update({status:'reservado',fechado_auto:false})
+          .eq('id',hid).neq('status','reservado').select();
         if(up.error)throw up.error;
+        if(!up.data||!up.data.length){
+          await loadHorarios(true);
+          return erroManual('Alguém acabou de marcar esse horário. Escolha outro.');
+        }
       }
 
       const ag=await sb.from('agendamentos').insert({
@@ -793,8 +810,12 @@
   };
 
   async function verReserva(id){
-    const s=slots.find(x=>x.id===id);
+    let s=slots.find(x=>x.id===id);
     let a=agendas[id];
+    if(!s){                                   // pode estar fora da semana carregada
+      const rh=await sb.from('horarios').select('*').eq('id',id).maybeSingle();
+      s=rh.data;
+    }
     if(!a){
       const r=await sb.from('agendamentos').select('*').eq('horario_id',id).is('cancelado_em',null).maybeSingle();
       a=r.data;
@@ -830,7 +851,12 @@
     if(!slotAberto)return;
     if(!confirm('Cancelar este agendamento? O horário volta a ficar aberto. Avise a cliente pelo WhatsApp — o sistema não avisa sozinho.'))return;
     const id=slotAberto;
-    await sb.from('agendamentos').update({cancelado_em:new Date().toISOString()}).eq('horario_id',id).is('cancelado_em',null);
+    const {data:canc}=await sb.from('agendamentos')
+      .update({cancelado_em:new Date().toISOString()}).eq('horario_id',id).is('cancelado_em',null).select();
+    if(!canc||!canc.length){
+      toast('Esse agendamento já não estava ativo. Atualizando.',true);
+      fecharSheet(); await loadHorarios(true); return;
+    }
     const {error}=await sb.from('horarios').update({status:'livre'}).eq('id',id);
     if(error){toast('Não consegui cancelar.',true);return;}
     const s=slots.find(x=>x.id===id);
@@ -879,7 +905,7 @@
     document.getElementById('adminList').innerHTML=joias.length?joias.map(j=>`
       <div class="admin-row">
         <div class="thumb">${j.foto_url?`<img src="${j.foto_url}" alt="${esc(j.nome)}">`:phIcon}</div>
-        <div class="info"><b>${j.nome}</b><small>${j.categoria||''}${(j.locais&&j.locais.length)?' · '+j.locais.join(', '):''} · R$ ${j.preco}</small></div>
+        <div class="info"><b>${esc(j.nome)}</b><small>${esc(j.categoria||'')}${(j.locais&&j.locais.length)?' · '+esc(j.locais.join(', ')):''} · R$ ${j.preco}</small></div>
         <div class="acts">
           <button class="icon-btn" onclick="editJoia('${j.id}')" title="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
           <button class="icon-btn del" onclick="delJoia('${j.id}')" title="Remover"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
@@ -927,7 +953,7 @@
         const on=locaisAtuais.some(l=>l.toLowerCase()===o.nome.toLowerCase());
         const esc1=o.nome.replace(/'/g,"\\'");
         const x=o.proprio?`<span class="x" onclick="event.stopPropagation();apagarLocal('${esc1}')" title="Apagar da lista">×</span>`:'';
-        return `<button type="button" class="loc-opt ${on?'on':''}" onclick="toggleLocal('${esc1}')">${o.nome}${x}</button>`;
+        return `<button type="button" class="loc-opt ${on?'on':''}" onclick="toggleLocal('${esc1}')">${esc(o.nome)}${x}</button>`;
       }).join('')+
       '</div></div>').join('');
   }
@@ -1009,11 +1035,13 @@
       const cur=editingId?joias.find(x=>x.id===editingId):null;
       if(cur)foto_url=cur.foto_url;
       if(pendingFile){
+        const antiga=cur&&cur.foto_url?cur.foto_url.split('/joias/').pop():null;
         const arquivo=await comprimirFoto(pendingFile);
         const path=Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.webp';
         const up=await sb.storage.from('joias').upload(path,arquivo,{contentType:'image/webp'});
         if(up.error)throw up.error;
         foto_url=sb.storage.from('joias').getPublicUrl(path).data.publicUrl;
+        if(antiga)sb.storage.from('joias').remove([antiga]);   // não deixa lixo no storage
       }
       const payload={nome,categoria:normalizarCategoria(document.getElementById('fCat').value),material:document.getElementById('fMat').value.trim()||'Titânio ASTM F-136',preco:Number(preco),descricao:document.getElementById('fDesc').value.trim()||null,locais:locaisAtuais,foto_url};
       let res;
@@ -1044,7 +1072,10 @@
   }
   async function delJoia(id){
     if(!confirm('Remover esta joia do catálogo?'))return;
+    const alvo=joias.find(x=>x.id===id);
+    const arq=alvo&&alvo.foto_url?alvo.foto_url.split('/joias/').pop():null;
     const {error}=await sb.from('joias').delete().eq('id',id);
+    if(!error&&arq)sb.storage.from('joias').remove([arq]);
     if(error){toast('Erro ao remover.',true);return;}
     if(editingId===id)resetForm();await loadJoias();toast('Joia removida.');
   }
@@ -1058,6 +1089,13 @@
     document.getElementById('saveBtn').textContent='Adicionar ao catálogo';
     document.getElementById('cancelBtn').style.display='none';
   }
+
+  // painel fica aberto o dia inteiro no celular dela — ao voltar pra aba, atualiza sozinho
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden && document.getElementById('paneHorarios') && !document.getElementById('paneHorarios').classList.contains('hidden')){
+      loadHorarios(true);
+    }
+  });
 
   init();
 </script>
