@@ -434,7 +434,7 @@
   async function doLogout(){await sb.auth.signOut();show('login');toast('Você saiu do painel.');}
 
   /* ═══════════ HORÁRIOS ═══════════ */
-  const HORA_INI=8, HORA_FIM=20, PASSO=30, DIAS=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const HORA_INI=8, HORA_FIM=20, PASSO=30, DIAS=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
   const horasPadrao=()=>{const r=[];for(let m=HORA_INI*60;m<=HORA_FIM*60;m+=PASSO)r.push(`${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}:00`);return r;};
   const INTENCOES={piercing:'Colocar um piercing',troca_joia:'Trocar de joia',duvida:'Tirar dúvida / avaliar',outro:'Outro'};
   let semanaOffset=0, slots=[], agendas={}, slotAberto=null, diasAbertos={};
@@ -451,7 +451,7 @@
   }
   function diasDaSemana(off){
     const s=segundaDaSemana(off);
-    return [0,1,2,3,4,5].map(i=>{const d=new Date(s);d.setDate(s.getDate()+i);return d;});
+    return [0,1,2,3,4,5,6].map(i=>{const d=new Date(s);d.setDate(s.getDate()+i);return d;});
   }
   function setTab(t){
     const h=t==='horarios';
@@ -485,7 +485,7 @@
     const scrollAntes=window.scrollY;
     document.getElementById('wkPrev').disabled=(semanaOffset<=-26);   // até 6 meses atrás
     const dias=diasDaSemana(semanaOffset);
-    const de=iso(dias[0]), ate=iso(dias[5]);
+    const de=iso(dias[0]), ate=iso(dias[6]);
     document.getElementById('wkLabel').textContent=
       `${dias[0].getDate()}/${dias[0].getMonth()+1} — ${dias[5].getDate()}/${dias[5].getMonth()+1}`
       + (semanaOffset<0?'  ·  já passou':'');
@@ -582,6 +582,8 @@
       resumo=resumo.length?resumo.join(' · '):'fechado';
 
       const hoje=iso(new Date())===dia;
+      const ehDomingo=(i===6);
+      if(ehDomingo && !doDia.length)return '';   // domingo só aparece se ela tiver aberto/marcado algo
       const passado=semanaOffset<0;
       // no histórico só interessa o que teve atendimento
       if(passado && !doDia.some(s=>s.status==='reservado'))return '';
@@ -701,7 +703,7 @@
   async function repetirSemana(){
     const ant=diasDaSemana(semanaOffset-1), atual=diasDaSemana(semanaOffset);
     const {data,error}=await sb.from('horarios').select('data,hora,status')
-      .gte('data',iso(ant[0])).lte('data',iso(ant[5]));
+      .gte('data',iso(ant[0])).lte('data',iso(ant[6]));
     if(error){toast('Não consegui ler a semana passada.',true);return;}
     const base=(data||[]).filter(s=>s.status!=='fechado');
     if(!base.length){toast('A semana passada não tinha horário aberto.');return;}
