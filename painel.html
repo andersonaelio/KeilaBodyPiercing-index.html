@@ -829,7 +829,13 @@
       d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})+' · '+s.hora.slice(0,5);
     document.getElementById('shZap').textContent=a.whatsapp||'não informado';
     if(a.nascimento){
-      const idade=Math.floor((Date.now()-new Date(a.nascimento))/31557600000);
+      const idade=(()=>{                       // conta anos de verdade: divisão simples erra no aniversário
+        const n=new Date(a.nascimento+'T12:00'), hj=new Date();
+        let x=hj.getFullYear()-n.getFullYear();
+        const m=hj.getMonth()-n.getMonth();
+        if(m<0||(m===0&&hj.getDate()<n.getDate()))x--;
+        return x;
+      })();
       document.getElementById('shNasc').textContent=
         new Date(a.nascimento+'T12:00').toLocaleDateString('pt-BR')+` (${idade} anos)`+(idade<18?' ⚠ menor':'');
     }else{
