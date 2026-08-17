@@ -222,8 +222,15 @@
     return slots.filter(s=>{const d=dataLocal(s.data,'12:00:00');return d>=ini&&d<fim;});
   }
   function temAlgum(off){return slotsDaSemana(off).length>0;}
+  function ultimaSemana(){                    // deriva o limite dos próprios dados
+    if(!slots.length)return 0;
+    const maior=slots.reduce((a,s)=>s.data>a?s.data:a,slots[0].data);
+    const ini=segunda(0), alvo=dataLocal(maior,'12:00:00');
+    return Math.max(0,Math.floor((alvo-ini)/(7*86400000)));
+  }
   function proximaComHorario(from,passo){
-    for(let i=from+passo;i>=0&&i<=10;i+=passo)if(temAlgum(i))return i;
+    const teto=ultimaSemana();
+    for(let i=from+passo;i>=0&&i<=teto;i+=passo)if(temAlgum(i))return i;
     return null;
   }
   function mudarSemana(passo){
