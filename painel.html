@@ -845,6 +845,12 @@
     document.getElementById('sheet').classList.remove('hidden');
   }
 
+  function zapE164(n){                          // mesma regra do zap_norm() no banco
+    const d=String(n||'').replace(/\D/g,'');
+    const nac=(d.length>=12&&d.length<=13&&d.startsWith('55'))?d.slice(2):d;
+    return '55'+nac;
+  }
+
   function fecharSheet(){document.getElementById('sheet').classList.add('hidden');slotAberto=null;}
 
   async function cancelarReserva(){
