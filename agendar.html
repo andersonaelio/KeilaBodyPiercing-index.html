@@ -246,7 +246,7 @@
   }
 
   async function carregar(){
-    const limite=new Date(Date.now()+2*60*60*1000);   // antecedência mínima de 2h
+    const limite=new Date();                          // sem antecedência mínima: só não pode ser no passado
     const hoje=new Date();
     const ate=new Date(); ate.setDate(ate.getDate()+60);
     const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -368,7 +368,7 @@
     if(error){
       const m=error.message||'';
       if(m.includes('horario_indisponivel'))     return falha('Alguém acabou de reservar esse horário. Escolha outro.');
-      if(m.includes('antecedencia_minima'))      return falha('Esse horário está muito próximo. Escolha um mais adiante.');
+      if(m.includes('horario_ja_passou'))        return falha('Esse horário já passou. Escolha outro.');
       if(m.includes('limite_agendamentos'))      return falha('Você já tem horários reservados. Me chama no WhatsApp para marcar mais.');
       if(m.includes('whatsapp_invalido'))        return falha('Confira o número do WhatsApp, com DDD.');
       if(m.includes('nascimento_invalido'))      return falha('Essa data de nascimento não está certa.');
